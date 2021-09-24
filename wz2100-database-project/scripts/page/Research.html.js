@@ -1,4 +1,4 @@
-﻿/*
+/*
 	This file is part of 'Warzone 2100 Guide by crab'.
 
 	'Warzone 2100 Guide by crab' is free software; you can redistribute it and/or modify
@@ -245,16 +245,20 @@ function ShowResearchTree(options_type2) {
 
     var options_div_id = "restree_container_tree_options";
 
-    $('#research_tree_container').html('<div id="tree_scale_slider_container" style="width:400px;display:inline-block"></div><div id="' + options_div_id + '" style="display:inline-block;"></div><div id="restree_container"></div>');
+    $('#research_tree_container').html('<div id="tree_scale_slider_container" style="width:400px;display:inline-block"></div><div id="' + options_div_id + '" style="display:inline-block;"></div><div id="restree_container"></div><div id="canvas_hscroll" width="100%"  ></div>');
 
 
     var scale_slider = DrawScaleSlider("tree_scale_slider_container", 200, function (value) {
         var scale = value / 100;
-        DrawResearchTree("restree_container", scale, tree_options, options_type2);
+        DrawResearchTree("restree_container", scale, tree_options, options_type2, function (canvas) {
+            DrawHorizontalScrollbar('canvas_hscroll', 'research_tree_container', canvas);
+        });
     });
     DrawHorizontalOptionsMenu(options_div_id, tree_options, function () {
         var scale = scale_slider.slider("value") / 100;
-        DrawResearchTree("restree_container", scale, tree_options, options_type2);
+        DrawResearchTree("restree_container", scale, tree_options, options_type2, function (canvas) {
+            DrawHorizontalScrollbar('canvas_hscroll', 'research_tree_container', canvas);
+        });
     });
     
     if (options_type2)
@@ -294,6 +298,10 @@ function ShowResearchTree(options_type2) {
         $('#load_as_image_btn').button().click(canvas, function (event) {
             var canvas_ = event.data;
 
+            // expand canvas width to the full width
+            var originalCanvasWidth = canvas_.width;
+            canvas.setWidth(canvas_.wzFullViewPortWidth);
+
             //var image = canvas_.toDataURL("image/png").replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
             //window.location.href = image;
 
@@ -304,6 +312,8 @@ function ShowResearchTree(options_type2) {
 
             //SaveClientFile('res_tree.png', blob);
 
+            // restore original canvas width
+            canvas.setWidth(originalCanvasWidth);
 
 
             var html = '<!DOCTYPE html>\
@@ -337,7 +347,7 @@ function ShowResearchTree(options_type2) {
             //    }
             //});
         });
-
+        DrawHorizontalScrollbar('canvas_hscroll', 'research_tree_container', canvas);
         
     });
 }
@@ -701,6 +711,39 @@ function DrawScaleSlider(container_id, init_value, slide_function) {
     });
     $('#' + input_id).val($('#' + slider_id).slider("value") + "%");
     return $('#' + slider_id);
+}
+
+function DrawHorizontalScrollbar(container_id, parent_container_id, canvas) {
+    // initializing the horizontal scrollbar
+    $("#" + container_id).slider( {
+    min: 0,
+    max: 100,
+    value: 0,
+    slide: function( event, ui ) {
+        if (this.current_hscroll == undefined)
+        {
+            this.current_hscroll = 0;
+        }
+        var width_to_scroll = canvas.wzFullViewPortWidth * canvas.getZoom() - canvas.width;
+        if ( width_to_scroll > 0 ) {
+            var scroll_grad = width_to_scroll / 100;
+            canvas.absolutePan(new fabric.Point( ui.value * scroll_grad, canvas.viewportTransform[5] ));
+            canvas.requestRenderAll();
+        }
+        this.current_hscroll = ui.value;
+    }
+    });
+    canvas.on('mouse:move', function(opt) {
+        if (this.isDragging) {
+            var zoom = canvas.getZoom();
+            var vpt = this.viewportTransform;
+            // update horizontal scrollbar position
+            var width_to_scroll = canvas.wzFullViewPortWidth * canvas.getZoom() - canvas.width;
+            var amountScrolled = Math.abs(canvas.viewportTransform[4]);
+            var newValue = (amountScrolled / width_to_scroll) * 100;
+            $("#" + container_id).slider( "option", "value", newValue );
+        }
+    });
 }
 
 function CreateComponentsLines(options) {

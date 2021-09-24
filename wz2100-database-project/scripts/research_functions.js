@@ -1755,20 +1755,24 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
     var y_size = 2000;//res_lines[res_lines.length - 1].pos_y + res_lines[res_lines.length - 1].height_expected + y_offset_bottom + line_space;
     var x_size = max_res_time * sec_per_pixel + 250;
 
+    var canvasWidth = 1000;
+
+    var useStaticCanvas = false;
+    if (options_type2)
+    {
+        if (options_type2.useStaticCanvas)
+        {
+            useStaticCanvas = true;
+            canvasWidth = x_size;
+        }
+    }
+
     /* Draw paper */
     var paper_elem_id = container_id + "_timeTableSvgCanva";
     {
 
-        $('#' + container_id).html('<canvas height="' + y_size + '" width="' + x_size + '" id="' + paper_elem_id + '"></canvas><div id="canvas_context_dialog" style="diaplay:none"></div>');
-        
-        var useStaticCanvas = false;
-        if (options_type2)
-        {
-            if (options_type2.useStaticCanvas)
-            {
-                useStaticCanvas = true;
-            }
-        }
+        $('#' + container_id).html('<canvas height="' + y_size + '" width="' + canvasWidth + '" id="' + paper_elem_id + '"></canvas><div id="canvas_context_dialog" style="diaplay:none"></div>');
+
         if (useStaticCanvas)
         {
             canvas = new fabric.StaticCanvas(paper_elem_id, {
@@ -1885,6 +1889,10 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
             canvas.setHeight(y_size);
             canvas.calcOffset();
         }
+
+        // store the full viewport height + width as a property for access elsewhere (ex. horizontal scrollbar)
+        canvas.wzFullViewPortHeight = y_size;
+        canvas.wzFullViewPortWidth = x_size;
 
         /* Draw TIMELINES*/
         {
@@ -2059,6 +2067,9 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                 {
                     var dialog_left = res_svg_item.icon_item.getScaledWidth() + res_svg_item.icon_item.left + $('#' + paper_elem_id).offset().left;//
                     var dialog_top = res_svg_item.icon_item.top + $('#' + paper_elem_id).offset().top;// ;
+
+                    dialog_left += canvas.viewportTransform[4];
+                    dialog_top += canvas.viewportTransform[5];
 
                     if ($("#canvas_context_dialog2").length == 0) {
                         $('body').append('<div id="canvas_context_dialog2"></div>');
@@ -2249,6 +2260,51 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                         hover_off(res_svg_item);
                     }
                 }
+            });
+
+            // Support dragging viewport
+            canvas.on('mouse:down', function(opt) {
+                var evt = opt.e;
+                if (evt.altKey === true) {
+                    this.isDragging = true;
+                    this.selection = false;
+                    this.lastPosX = evt.clientX;
+                    this.lastPosY = evt.clientY;
+                }
+            });
+            canvas.on('mouse:move', function(opt) {
+                if (this.isDragging) {
+                    var e = opt.e;
+                    var zoom = canvas.getZoom();
+                    var vpt = this.viewportTransform;
+                    if (zoom < 0.4) {
+                        vpt[4] = 200 - canvas.wzFullViewPortWidth * zoom / 2;
+                        vpt[5] = 200 - canvas.wzFullViewPortHeight * zoom / 2;
+                    } else {
+                        vpt[4] += e.clientX - this.lastPosX;
+                        vpt[5] += e.clientY - this.lastPosY;
+                        if (vpt[4] >= 0) {
+                            vpt[4] = 0;
+                        } else if (vpt[4] < canvas.getWidth() - canvas.wzFullViewPortWidth * zoom) {
+                            vpt[4] = canvas.getWidth() - canvas.wzFullViewPortWidth * zoom;
+                        }
+                        if (vpt[5] >= 0) {
+                            vpt[5] = 0;
+                        } else if (vpt[5] < canvas.getHeight() - canvas.wzFullViewPortHeight * zoom) {
+                            vpt[5] = canvas.getHeight() - canvas.wzFullViewPortHeight * zoom;
+                        }
+                    }
+                    this.requestRenderAll();
+                    this.lastPosX = e.clientX;
+                    this.lastPosY = e.clientY;
+                }
+            });
+            canvas.on('mouse:up', function(opt) {
+                // on mouse up we want to recalculate new interaction
+                // for all objects, so we call setViewportTransform
+                this.setViewportTransform(this.viewportTransform);
+                this.isDragging = false;
+                this.selection = true;
             });
         }
 
