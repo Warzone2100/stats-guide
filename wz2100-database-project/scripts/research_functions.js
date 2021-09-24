@@ -1538,6 +1538,8 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                     scaleX: this.scale,
                     stroke: this.res_svg_item.line.line_color, //that defines border color
                     strokeWidth: 2,
+                    perPixelTargetFind: false,
+                    objectCaching: false,
                 });
                 canvas.add(img);
                 //canvas.insertAt(img, canvas.getObjects().length); //make sure image will be at top of z-order
@@ -1580,6 +1582,7 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                     selectable: true,
                     evented: true, //When set to `false`, an object can not be a target of events. All events propagate through it. 
                     hoverCursor: "pointer",
+                    perPixelTargetFind: false,
                 })
                 canvas.add(res_svg_item.icon_item);
                 this.res_svg_item.icon_item.res_svg_item = this.res_svg_item;
@@ -1616,6 +1619,7 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                 selectable: true,
                 evented: true, //When set to `false`, an object can not be a target of events. All events propagate through it. 
                 hoverCursor: "pointer",
+                perPixelTargetFind: false,
             })
             canvas.add(res_svg_item.icon_item);
             res_svg_item.icon_item.res_svg_item = res_svg_item;
@@ -1787,7 +1791,7 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
         {
             canvas = new fabric.Canvas(paper_elem_id, {
                 renderOnAddRemove: false, //Indicates whether fabric.Collection.add, fabric.Collection.insertAt and fabric.Collection.remove should also re-render canvas. Disabling this option could give a great performance boost when adding/removing a lot of objects to/from canvas at once (followed by a manual rendering after addition/deletion)
-                perPixelTargetFind: true, //When true, object detection happens on per-pixel basis rather than on per-bounding-box
+                perPixelTargetFind: false, //When true, object detection happens on per-pixel basis rather than on per-bounding-box
                 selection: false, //Indicates whether group selection should be enabled
                 //skipTargetFind: true, When true, target detection is skipped when hovering over canvas. This can be used to improve performance.
                 stateful: false, //Indicates whether objects' state should be saved
@@ -1805,6 +1809,8 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
         fabric.Object.prototype.hasRotatingPoint = false; //When set to `false`, object's controlling rotating point will not be visible or selectable
         fabric.Object.prototype.evented = false; //When set to `false`, an object can not be a target of events. All events propagate through it. 
         // **** evented = false - that greatly improves perfomance of hovering events!
+
+        fabric.Object.prototype.objectCaching = false; // When set to false, drastically reduces memory usage
 
         fabric.Object.prototype.lockMovementX = true;
         fabric.Object.prototype.lockMovementY = true;
@@ -1907,6 +1913,8 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                 var line = new fabric.Line([x, y, x_size, y], {
                     stroke: 'black',
                     selectable: false,
+                    evented: false,
+                    perPixelTargetFind: false,
                 });
                 canvas.insertAt(line, 0);
             }
@@ -1920,6 +1928,8 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                 var line = new fabric.Line([x, y, x_size - 10, y], {
                     stroke: 'black',
                     selectable: false,
+                    evented: false,
+                    perPixelTargetFind: false,
                 });
                 canvas.add(line);
             }
@@ -1937,6 +1947,8 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                         stroke: 'black',
                         strokeWidth: 2,
                         selectable: false,
+                        evented: false,
+                        perPixelTargetFind: false,
                     });
                     canvas.insertAt(line, 0);
 
@@ -1954,6 +1966,8 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                     var line = new fabric.Line([x, y, x, y1], {
                         stroke: 'black',
                         selectable: false,
+                        evented: false,
+                        perPixelTargetFind: false,
                     });
                     line.opacity = (0.7);
                     canvas.insertAt(line, 0);
@@ -2013,6 +2027,8 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                     originX: 'center', //these two lines are fix bug... do not know how it works. but with these 2 lines it works ok
                     originY: 'center',
                     selectable: false,
+                    evented: false,
+                    perPixelTargetFind: false,
                 });
 
                 canvas.insertAt(line, 0); //make sure connection line will be inserted under research rectangles (icons)
