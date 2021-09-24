@@ -170,13 +170,25 @@ function DrawBodyLists() {
 
 function DrawBodies(container_id, body_filter_function) {
 
+    var do_translate_names = typeof po_Translate != "undefined";
+
     var grid_data = [];
     for (var body_id in Bodies.loaded_data_hash) {
         var body = Bodies.loaded_data_hash[body_id];
         if (body_filter_function(body))
         {
-            var body_upgraded = jQuery.parseJSON(JSON.stringify(Upgrades[player].Body[body.index_of_datarow]));
-            grid_data.push(body_upgraded);
+            var data_row = jQuery.parseJSON(JSON.stringify(Upgrades[player].Body[body.index_of_datarow]));
+            grid_data.push(data_row);
+
+            if (data_row.name) {
+                data_row.nameKey = data_row.name;
+            }
+            if (do_translate_names && data_row.name != undefined)
+            {
+                if (po_Translate[data_row.name] != undefined) {
+                    data_row.name = po_Translate[data_row.name][0];
+                }
+            }
         }
     }
 
