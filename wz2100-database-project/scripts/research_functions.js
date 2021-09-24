@@ -1,4 +1,4 @@
-﻿/*
+/*
 	This file is part of 'Warzone 2100 Guide by crab'.
 
 	'Warzone 2100 Guide by crab' is free software; you can redistribute it and/or modify
@@ -1545,7 +1545,7 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                 img.res_svg_item = res_svg_item;
 
                 var text_place_at_top = this.text_lines == 1 && res_svg_item.res_time_collision_offset==0;
-                var text_x = text_place_at_top ? x + 1 : x + img.getWidth() - 4; //...img.width did not worked for scaled image
+                var text_x = text_place_at_top ? x + 1 : x + img.getScaledWidth() - 4; //...img.width did not worked for scaled image
                 var text_y = text_place_at_top ? y - 9 : y - 4;
                 var text_aligh = text_place_at_top ? 'center' : 'left';
 
@@ -1847,10 +1847,10 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                     var svg_res_item = res_svg_items_hash[res_id];
                     for (var i in svg_res_item.svg_items) {
                         var svg_item = svg_res_item.svg_items[i];
-                        if (min_top_coord == null) min_top_coord = svg_item.getTop();
-                        min_top_coord = Math.min(min_top_coord, svg_item.getTop());
-                        max_line_height = Math.max(max_line_height, svg_item.getHeight() - min_top_coord);
-                        svg_item.setTop(y_offset_top + svg_item.getTop() + line_y_offset);
+                        if (min_top_coord == null) min_top_coord = svg_item.top;
+                        min_top_coord = Math.min(min_top_coord, svg_item.top);
+                        max_line_height = Math.max(max_line_height, svg_item.getScaledHeight() - min_top_coord);
+                        svg_item.top = (y_offset_top + svg_item.top + line_y_offset);
                         svg_item.setCoords();
                     }
                 }
@@ -1858,10 +1858,10 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                     var svg_res_item = res_svg_items_hash[res_id];
                     for (var i in svg_res_item.svg_items) {
                         var svg_item = svg_res_item.svg_items[i];
-                        min_top_coord = Math.min(min_top_coord, svg_item.getTop());
-                        if (min_top_coord == null) min_top_coord = svg_item.getTop();
-                        max_line_height = Math.max(max_line_height, svg_item.getHeight() - min_top_coord);
-                        svg_item.setTop(y_offset_top + svg_item.getTop() + line_y_offset);
+                        min_top_coord = Math.min(min_top_coord, svg_item.top);
+                        if (min_top_coord == null) min_top_coord = svg_item.top;
+                        max_line_height = Math.max(max_line_height, svg_item.getScaledHeight() - min_top_coord);
+                        svg_item.top = (y_offset_top + svg_item.top + line_y_offset);
                         svg_item.setCoords();
                     }
                 }
@@ -1933,13 +1933,13 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                     canvas.insertAt(line, 0);
 
                     var txt_top = new fabric.Text(time.tohhMMSS(), { left: x, top: top_line_y - 10, fontSize: 12, fontWeight: 'bold' });
-                    txt_top.setLeft(x - txt_top.getWidth() / 2 + 1);
-                    txt_top.setTop(top_line_y - 10 - txt_top.getHeight() / 2);
+                    txt_top.left = (x - txt_top.getScaledWidth() / 2 + 1);
+                    txt_top.top = (top_line_y - 10 - txt_top.getScaledHeight() / 2);
                     canvas.insertAt(txt_top, 0);
 
                     var txt_bottom = new fabric.Text(time.tohhMMSS(), { left: x, top: bottom_line_y + 10, fontSize: 12, fontWeight: 'bold' });
-                    txt_bottom.setLeft(x - txt_bottom.getWidth() / 2 + 1);
-                    txt_bottom.setTop(bottom_line_y + 10 - txt_bottom.getHeight() / 2);
+                    txt_bottom.left = (x - txt_bottom.getScaledWidth() / 2 + 1);
+                    txt_bottom.top = (bottom_line_y + 10 - txt_bottom.getScaledHeight() / 2);
                     canvas.insertAt(txt_bottom, 0);
                 } else {
                     /* Thin line */
@@ -1947,17 +1947,17 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                         stroke: 'black',
                         selectable: false,
                     });
-                    line.setOpacity(0.7);
+                    line.opacity = (0.7);
                     canvas.insertAt(line, 0);
 
                     var txt_top = new fabric.Text(time.tohhMMSS(), { left: x, top: top_line_y - 10, fontSize: 12 });
-                    txt_top.setLeft(x - txt_top.getWidth() / 2);
-                    txt_top.setTop(top_line_y - 10 - txt_top.getHeight() / 2);
+                    txt_top.left = (x - txt_top.getScaledWidth() / 2);
+                    txt_top.top = (top_line_y - 10 - txt_top.getScaledHeight() / 2);
                     canvas.insertAt(txt_top, 0);
 
                     var txt_bottom = new fabric.Text(time.tohhMMSS(), { left: x, top: bottom_line_y + 10, fontSize: 12 });
-                    txt_bottom.setLeft(x - txt_bottom.getWidth() / 2);
-                    txt_bottom.setTop(bottom_line_y + 10 - txt_bottom.getHeight() / 2);
+                    txt_bottom.left = (x - txt_bottom.getScaledWidth() / 2);
+                    txt_bottom.top = (bottom_line_y + 10 - txt_bottom.getScaledHeight() / 2);
                     canvas.insertAt(txt_bottom, 0);
                 }
             }
@@ -1986,17 +1986,17 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
 
                 }
                 var obj1 = {
-                    x: parent.icon_item.getLeft(),
-                    y: parent.icon_item.getTop(),
-                    width: parent.icon_item.getWidth(), //..."width" property did not worked here for scaled image
-                    height: parent.icon_item.getHeight(),
+                    x: parent.icon_item.left,
+                    y: parent.icon_item.top,
+                    width: parent.icon_item.getScaledWidth(), //..."width" property did not worked here for scaled image
+                    height: parent.icon_item.getScaledHeight(),
                 };
 
                 var obj2 = {
-                    x: child.icon_item.getLeft(),
-                    y: child.icon_item.getTop(),
-                    width: child.icon_item.getWidth(),
-                    height: child.icon_item.getHeight(),
+                    x: child.icon_item.left,
+                    y: child.icon_item.top,
+                    width: child.icon_item.getScaledWidth(),
+                    height: child.icon_item.getScaledHeight(),
                 };
                 var path = connectionPath(obj1, obj2, conn_number);
                 var line = new fabric.Path(path, {
@@ -2023,17 +2023,17 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                 return function () {
                     var target = originalFn.apply(this, arguments);
                     if (target) {
-                        if (this._hoveredTarget !== target) {
-                            if (this._hoveredTarget) {
-                                canvas.fire('object:out', { target: this._hoveredTarget });
+                        if (this._wz_hoveredTarget !== target) {
+                            if (this._wz_hoveredTarget) {
+                                canvas.fire('object:out', { target: this._wz_hoveredTarget });
                             }
                             canvas.fire('object:over', { target: target });
-                            this._hoveredTarget = target;
+                            this._wz_hoveredTarget = target;
                         }
                     }
-                    else if (this._hoveredTarget) {
-                        canvas.fire('object:out', { target: this._hoveredTarget });
-                        this._hoveredTarget = null;
+                    else if (this._wz_hoveredTarget) {
+                        canvas.fire('object:out', { target: this._wz_hoveredTarget });
+                        this._wz_hoveredTarget = null;
                     }
                     return target;
                 };
@@ -2057,8 +2057,8 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
             {
                 /* Show details popup */
                 {
-                    var dialog_left = res_svg_item.icon_item.getWidth() + res_svg_item.icon_item.getLeft() + $('#' + paper_elem_id).offset().left;// 
-                    var dialog_top = res_svg_item.icon_item.getTop() + $('#' + paper_elem_id).offset().top;// ;
+                    var dialog_left = res_svg_item.icon_item.getScaledWidth() + res_svg_item.icon_item.left + $('#' + paper_elem_id).offset().left;//
+                    var dialog_top = res_svg_item.icon_item.top + $('#' + paper_elem_id).offset().top;// ;
 
                     if ($("#canvas_context_dialog2").length == 0) {
                         $('body').append('<div id="canvas_context_dialog2"></div>');
@@ -2171,12 +2171,13 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                 /* Highlight current research icon */
                 if (res_svg_item.icon_item.type == "image") {
                     var x = res_svg_item.icon_item.oCoords.tl.x - 1, y = res_svg_item.icon_item.oCoords.tl.y - 1;
-                    res_svg_item.icon_item.filters.push(
-                       new fabric.Image.filters.Brightness({ brightness: 75 }));
-                    res_svg_item.icon_item.applyFilters(function () { canvas.renderAll(); });
+                    res_svg_item.icon_item.filters[0] =
+                       new fabric.Image.filters.Brightness({ brightness: 0.3 });
+                    res_svg_item.icon_item.applyFilters();
+                    canvas.requestRenderAll();
                 } else {
                     res_svg_item.icon_item.set("strokeWidth", 3);
-                    canvas.renderAll();
+                    canvas.requestRenderAll();
                 }
                 //res_svg_item.icon_item.bringToFront();// - very slow
                 //res_svg_item.text_item.bringToFront();
@@ -2224,12 +2225,13 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                 if (res_svg_item.icon_item.type == "image") {
 
                     res_svg_item.icon_item.filters = [];
-                    res_svg_item.icon_item.applyFilters(canvas.renderAll.bind(canvas));
+                    res_svg_item.icon_item.applyFilters();
+                    canvas.requestRenderAll();
                 } else {
                     res_svg_item.icon_item.set("strokeWidth", 1);
                 }
 
-                canvas.renderAll();
+                canvas.requestRenderAll();
 
             }
             canvas.on('object:over', function (options) {
@@ -2252,7 +2254,7 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
 
         //$('body').append('<img src="' + canvas.toDataURL('png') + '" >');
         //$('#' + container_id).html('<img src="' + canvas.toDataURL('png') + '" >');
-        canvas.renderAll(); // Note, calling renderAll() is important because we setted off automatical drawing of objects on add/insert
+        canvas.requestRenderAll(); // Note, calling renderAll() is important because we setted off automatical drawing of objects on add/insert
         if (after_draw_callback)
         {
             after_draw_callback(canvas);
