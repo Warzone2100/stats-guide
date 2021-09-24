@@ -1800,8 +1800,6 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
         }
 
 
-        canvas.on("after:render", function () { canvas.calcOffset(); }); //this line fixes wrong mouse offset (i hate that fabric.js already!)
-
         /* Setting default settings for all new objects in Fabric.js (our goal - improve perfomance) */
         fabric.Object.prototype.selectable = false;
         fabric.Object.prototype.hasBorders = false; //When set to `false`, object's controlling borders are not rendered
@@ -1818,18 +1816,6 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
         fabric.Object.prototype.lockScalingX = true;
         fabric.Object.prototype.lockScalingY = true;
         fabric.Object.prototype.lockUniScaling = true;
-
-        /* bugfix for fabric.js */
-        fabric.Line.prototype._setWidthHeight = function (options) {
-            options || (options = {});
-            this.set('width', Math.abs(this.x2 - this.x1) || 1);
-            this.set('height', Math.abs(this.y2 - this.y1) || 1);
-
-            var left = 'left' in options ? options.left : (Math.min(this.x1, this.x2) + this.width / 2),
-                top = 'top' in options ? options.top : (Math.min(this.y1, this.y2) + this.height / 2);
-
-            this.setPositionByOrigin(new fabric.Point(left, top), 'center', 'center');
-        };
 
     }
 
