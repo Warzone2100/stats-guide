@@ -1,0 +1,144 @@
+name: 'Publish Site'
+on:
+  push:
+    branches:
+      - main
+  repository_dispatch:
+    types: [github_release_update, development_build_update, scheduled_update]
+
+concurrency: publish_site
+
+jobs:
+  publish_site:
+    name: 'Publish Site'
+    runs-on: ubuntu-latest
+    environment: publish-site
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v2
+        with:
+          ref: main
+          path: main
+          submodules: recursive
+          persist-credentials: false
+      - name: Create working directories
+        id: preparefolders
+        run: |
+          CHANGELOG_DIR="${GITHUB_WORKSPACE}/temp/changes"
+          mkdir -p "${CHANGELOG_DIR}"
+          echo "::set-output name=CHANGELOG_DIR::${CHANGELOG_DIR}"
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+          path: gh-pages
+          ssh-key: '${{ secrets.PAGES_DEPLOY_KEY }}'
+          persist-credentials: true
+      - name: Copy site files to gh-pages branch
+        id: copy_updates
+        run: |
+          rsync -a "${{ github.workspace }}/main/wz2100-database-project/" "${{ github.workspace }}/gh-pages/"
+      - name: Publish any changes to data files
+        id: publishpages
+        working-directory: "./gh-pages"
+        run: |
+          git config user.name "wzdev-ci"
+          git config user.email "61424532+wzdev-ci@users.noreply.github.com"
+          git add -A
+          timestamp=$(date -u)
+          git commit -m "Generate site: ${timestamp}" || { echo "::set-output name=PROCESS_DEPLOYMENT::false" && exit 0; }
+          #git pull --rebase
+          # Get the new commit's SHA
+          NEW_COMMIT_SHA=$(git rev-parse --verify HEAD)
+          echo "NEW_COMMIT_SHA=${NEW_COMMIT_SHA}"
+          # Push the new commit to the gh-pages branch
+          git push
+          echo "::set-output name=PROCESS_DEPLOYMENT::true"
+          echo "::set-output name=GH_PAGES_BRANCH_COMMIT_SHA::${NEW_COMMIT_SHA}"
+          echo "Done."
+          # Get the list of files / paths changed in the latest commit
+          CHANGED_FILES_LIST="${{ steps.preparefolders.outputs.CHANGELOG_DIR }}/changedpaths.txt"
+          git diff-tree --no-commit-id --name-only -r -z HEAD | tr '\0' '\n' > "${CHANGED_FILES_LIST}"
+          echo "::set-output name=CHANGED_FILES_LIST::${CHANGED_FILES_LIST}"
+          exit 0
+      - name: 'Wait for Deployment'
+        id: deployments
+        if: success() && (steps.publishpages.outputs.PROCESS_DEPLOYMENT == 'true')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_PAGES_BRANCH_COMMIT_SHA: ${{ steps.publishpages.outputs.GH_PAGES_BRANCH_COMMIT_SHA }}
+        shell: bash --noprofile --norc {0}
+        run: |
+          echo "Searching for deployment matching commit: ${GH_PAGES_BRANCH_COMMIT_SHA} ..."
+          # Poll until we find a deployment with a sha == the push's commit's SHA
+          status=1
+          POLL_ATTEMPTS=0
+          while [ $POLL_ATTEMPTS -le 15 ]
+          do
+            sleep_interval=$(( POLL_ATTEMPTS * POLL_ATTEMPTS ))
+            if [ $sleep_interval -ne 0 ]; then
+              echo "Sleeping ${sleep_interval} seconds..."
+              sleep ${sleep_interval}
+              echo "Finished sleep"
+            fi
+            curl -H "Authorization: token ${GITHUB_TOKEN}" -s "https://api.github.com/repos/${GITHUB_REPOSITORY}/deployments" | jq --exit-status --arg desired_sha "${GH_PAGES_BRANCH_COMMIT_SHA}" '.[] | select(.sha == $desired_sha and .environment == "github-pages")' > "deployment.json"
+            status=$?
+            if [ $status -eq 0 ]; then
+              break
+            fi
+            echo "Not found yet ..."
+            (( POLL_ATTEMPTS++ ))
+          done
+          if [ $status -ne 0 ]; then
+            # Did not find matching deployment
+            echo "::error ::Failed to find matching deployment for: ${GITHUB_SHA}"
+            exit 1
+          fi
+          DEPLOYMENT_ID=$(cat "deployment.json" | jq --raw-output '.id')
+          if [ -z "$DEPLOYMENT_ID" ]; then
+            echo "::error ::Missing expected '.id' field"
+            exit 1
+          fi
+          echo "Found deployment ID: ${DEPLOYMENT_ID}"
+          echo "::set-output name=DEPLOYMENT_ID::${DEPLOYMENT_ID}"
+      - name: 'Wait for Deployment Success'
+        if: success() && (steps.publishpages.outputs.PROCESS_DEPLOYMENT == 'true')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEPLOYMENT_ID: ${{ steps.deployments.outputs.DEPLOYMENT_ID }}
+        shell: bash --noprofile --norc {0}
+        run: |
+          echo "Waiting for deployment ${DEPLOYMENT_ID} to finish ..."
+          # Poll deployment statuses until we find a status with:
+          # "state": "success"
+          # "environment": "github-pages"
+          DEPLOYMENT_STATE=""
+          POLL_ATTEMPTS=0
+          while [ $POLL_ATTEMPTS -le 12 ]
+          do
+            sleep_interval=$(( POLL_ATTEMPTS * POLL_ATTEMPTS ))
+            if [ $sleep_interval -ne 0 ]; then
+              echo "Sleeping ${sleep_interval} seconds..."
+              sleep ${sleep_interval}
+              echo "Finished sleep"
+            fi
+            DEPLOYMENT_STATE=$(curl -H "Authorization: token ${GITHUB_TOKEN}" -s "https://api.github.com/repos/${GITHUB_REPOSITORY}/deployments/${DEPLOYMENT_ID}/statuses" | jq --raw-output --exit-status --argjson end_states '["success","error","failure"]' '.[] | select( (.state as $state | $end_states | index($state) != null ) and (.environment == "github-pages") ) | .state')
+            status=$?
+            (( POLL_ATTEMPTS++ ))
+            if [ $status -eq 0 ]; then
+              break
+            fi
+          done
+          if [ $status -ne 0 ]; then
+            # Did not find matching deployment
+            echo "::error ::Deployment did not finish before timeout"
+            exit 1
+          fi
+          echo "Found deployment state: ${DEPLOYMENT_STATE}"
+          if [ "$DEPLOYMENT_STATE" != "success" ]; then
+            echo "::error ::Deployment did not appear to succeed? (state: ${DEPLOYMENT_STATE})"
+            exit 1
+          fi
+          # Sleep for 10 seconds
+          sleep 10
+          echo "Done."
