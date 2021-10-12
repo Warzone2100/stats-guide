@@ -432,16 +432,16 @@ function DoResearch(time_seconds, player, callback_function, do_set_research_tim
         }
 
         /* Init players upgrade data */
-        Upgrades[player].Body = jQuery.parseJSON(JSON.stringify(Bodies.loaded_data));
+        Upgrades[player].Body = JSON.parse(JSON.stringify(Bodies.loaded_data));
         for (var i = 0; i < Upgrades[player].Body.length; i++) {
             Upgrades[player].Body[i].armour = 0;
         }
-        Upgrades[player].Building = jQuery.parseJSON(JSON.stringify(Structures.loaded_data));
-        Upgrades[player].Construct = jQuery.parseJSON(JSON.stringify(Construction.loaded_data));
-        Upgrades[player].Repair = jQuery.parseJSON(JSON.stringify(Repair.loaded_data));
-        Upgrades[player].Sensor = jQuery.parseJSON(JSON.stringify(Sensor.loaded_data));
-        Upgrades[player].ECM = jQuery.parseJSON(JSON.stringify(ECM.loaded_data));
-        Upgrades[player].Weapon = jQuery.parseJSON(JSON.stringify(Weapons.loaded_data));
+        Upgrades[player].Building = JSON.parse(JSON.stringify(Structures.loaded_data));
+        Upgrades[player].Construct = JSON.parse(JSON.stringify(Construction.loaded_data));
+        Upgrades[player].Repair = JSON.parse(JSON.stringify(Repair.loaded_data));
+        Upgrades[player].Sensor = JSON.parse(JSON.stringify(Sensor.loaded_data));
+        Upgrades[player].ECM = JSON.parse(JSON.stringify(ECM.loaded_data));
+        Upgrades[player].Weapon = JSON.parse(JSON.stringify(Weapons.loaded_data));
         Upgrades[player].upgrades = {};
 
         var all_research = {};

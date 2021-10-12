@@ -71,7 +71,7 @@ function DrawSensorList() {
         if (ResearchedComponents[player_all_researched][sensor.grid_id] == undefined) /* Check Sensor can be researched */ {
             continue;
         }
-        var sensor_upgraded = jQuery.parseJSON(JSON.stringify(Upgrades[player].Sensor[sensor.index_of_datarow]));
+        var sensor_upgraded = JSON.parse(JSON.stringify(Upgrades[player].Sensor[sensor.index_of_datarow]));
         grid_data.push(sensor_upgraded);
     }
 

@@ -358,7 +358,7 @@ function DrawWeapons(container_id, weap_id_list, weapon_filter_function, additio
         for (var weap_id in Weapons.loaded_data_hash) {
             if (weapon_filter_function(Weapons.loaded_data_hash[weap_id])) {
                 var weapon = Weapons.loaded_data_hash[weap_id];
-                var weapon_upgraded = jQuery.parseJSON(JSON.stringify(Upgrades[player].Weapon[weapon.index_of_datarow]))
+                var weapon_upgraded = JSON.parse(JSON.stringify(Upgrades[player].Weapon[weapon.index_of_datarow]))
                 weapon_upgraded.base = weapon;
                 //var weap_c = {};
                 //weap_c.base = {};
@@ -370,7 +370,7 @@ function DrawWeapons(container_id, weap_id_list, weapon_filter_function, additio
     } else {
         for (var i = 0; i < weap_id_list.length; i++) {
             var weapon = Weapons.loaded_data_hash[weap_id_list[i]];
-            var weapon_upgraded = jQuery.parseJSON(JSON.stringify(Upgrades[player].Weapon[weapon.index_of_datarow]))
+            var weapon_upgraded = JSON.parse(JSON.stringify(Upgrades[player].Weapon[weapon.index_of_datarow]))
             weapon_upgraded.base = weapon;
             grid_data.push(weapon_upgraded);
         }

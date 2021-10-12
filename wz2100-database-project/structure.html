@@ -802,7 +802,7 @@ function DrawStructureStaticData(structure_id) {
 
 function DrawStructureUpgradesTable(container_id, structure_id) {
     var structure = Structures.loaded_data_hash[structure_id];
-    var structure_upgraded = jQuery.parseJSON(JSON.stringify(Upgrades[player_all_researched].Building[structure.index_of_datarow])); //deep copy
+    var structure_upgraded = JSON.parse(JSON.stringify(Upgrades[player_all_researched].Building[structure.index_of_datarow])); //deep copy
     var upgrade_log = structure_upgraded.upgrade_history;
     var grid_data = [];
     var research_hash_list = {};
@@ -872,7 +872,7 @@ function DrawStructureUpgradesTable(container_id, structure_id) {
 
 function DrawOtherUpgrades(container_id, structure_id) {
     var structure = Structures.loaded_data_hash[structure_id];
-    var structure_upgraded = jQuery.parseJSON(JSON.stringify(Upgrades[player_all_researched].Building[structure.index_of_datarow])); //deep copy
+    var structure_upgraded = JSON.parse(JSON.stringify(Upgrades[player_all_researched].Building[structure.index_of_datarow])); //deep copy
     var upgrade_log = structure_upgraded.upgrade_history;
     var grid_data = [];
     var summ = {};
@@ -936,7 +936,7 @@ function DrawOtherUpgrades(container_id, structure_id) {
 function DrawConstructionTimeUpgradesTable(container_id) {
     var truck_id = "Spade1Mk1";
     var truck_index = Construction.loaded_data_hash[truck_id].index_of_datarow;
-    var truck_upgraded = jQuery.parseJSON(JSON.stringify(Upgrades[player_all_researched].Construct[truck_index])); //deep copy
+    var truck_upgraded = JSON.parse(JSON.stringify(Upgrades[player_all_researched].Construct[truck_index])); //deep copy
     var upgrade_log = truck_upgraded.upgrade_history;
     var grid_data = [];
     var summ = 0;

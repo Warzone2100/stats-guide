@@ -1565,18 +1565,18 @@ function CalculateTankDesign(player, turrets, body, propulsion, non_weapon_desig
     for(var i=0; i<turrets_num; i++)
     {
         turret_name += turrets[i].name + " ";
-        turrets_upgraded[i] = jQuery.parseJSON(JSON.stringify(GetTurretUpgrade(player, turrets[i].grid_id, non_weapon_design)[turrets[i].index_of_datarow])); //deep copy
+        turrets_upgraded[i] = JSON.parse(JSON.stringify(GetTurretUpgrade(player, turrets[i].grid_id, non_weapon_design)[turrets[i].index_of_datarow])); //deep copy
     }
     
-    var body_upgraded = jQuery.parseJSON(JSON.stringify(Upgrades[player].Body[body.index_of_datarow])); //deep copy
+    var body_upgraded = JSON.parse(JSON.stringify(Upgrades[player].Body[body.index_of_datarow])); //deep copy
 
     var TankDesign = {};
     TankDesign.name = turret_name + body.name + ' ' + propulsion.name;
-    TankDesign.turrets = jQuery.parseJSON(JSON.stringify(turrets)); //deep copy
+    TankDesign.turrets = JSON.parse(JSON.stringify(turrets)); //deep copy
     TankDesign.turrets_upgraded = turrets_upgraded;
-    TankDesign.body = jQuery.parseJSON(JSON.stringify(body)); //deep copy
+    TankDesign.body = JSON.parse(JSON.stringify(body)); //deep copy
     TankDesign.body_upgraded = body_upgraded;
-    TankDesign.propulsion = jQuery.parseJSON(JSON.stringify(propulsion)); //deep copy
+    TankDesign.propulsion = JSON.parse(JSON.stringify(propulsion)); //deep copy
     TankDesign.baseStats = {};
 
     //add weapon stats to TankDesign object
@@ -1678,7 +1678,7 @@ function CalculateTankDesign(player, turrets, body, propulsion, non_weapon_desig
 function CalculateBuilding(player, structure) {
 
     var StructureDesign;
-    var structure_upgraded = jQuery.parseJSON(JSON.stringify(Upgrades[player].Building[structure.index_of_datarow])); //deep copy
+    var structure_upgraded = JSON.parse(JSON.stringify(Upgrades[player].Building[structure.index_of_datarow])); //deep copy
     StructureDesign = {};
     StructureDesign.baseStats = {};
 
@@ -1686,7 +1686,7 @@ function CalculateBuilding(player, structure) {
         var weapons = structure.weapons;
         if (weapons) {
             var weapon = Weapons.loaded_data_hash[weapons[0]];
-            //var weapon_upgraded = jQuery.parseJSON(JSON.stringify(Upgrades[player].Weapon[weapon.index_of_datarow])); //deep copy
+            //var weapon_upgraded = JSON.parse(JSON.stringify(Upgrades[player].Weapon[weapon.index_of_datarow])); //deep copy
             //add weapon stats to TankDesign object
             CalculateWeaponStats_AddToObjects(player, weapon, StructureDesign, StructureDesign.baseStats, StructureDesign);
         }
@@ -1695,7 +1695,7 @@ function CalculateBuilding(player, structure) {
     /* SENSOR RANGE */
     if (structure.sensorID != undefined) {
         var sensor = Sensor.loaded_data_hash[structure.sensorID];
-        var sensor_upgraded = jQuery.parseJSON(JSON.stringify(Upgrades[player].Sensor[sensor.index_of_datarow])); //deep copy
+        var sensor_upgraded = JSON.parse(JSON.stringify(Upgrades[player].Sensor[sensor.index_of_datarow])); //deep copy
         if (sensor != undefined) {
             StructureDesign.baseStats.sensorRange = sensor.range;
             StructureDesign.sensorRange = sensor_upgraded.range;
@@ -1747,9 +1747,9 @@ function CalculateBuilding(player, structure) {
 function CalculateWeaponStats_AddToObjects(player, weapon, ref_object, ref_object_base, ref_object_upgraded, non_weapon_design) {
 
    
-    var weapon_upgraded = jQuery.parseJSON(JSON.stringify(GetTurretUpgrade(player, weapon.grid_id, non_weapon_design)[weapon.index_of_datarow])); //deep copy
+    var weapon_upgraded = JSON.parse(JSON.stringify(GetTurretUpgrade(player, weapon.grid_id, non_weapon_design)[weapon.index_of_datarow])); //deep copy
 
-    ref_object.weapon = jQuery.parseJSON(JSON.stringify(weapon)); //deep copy
+    ref_object.weapon = JSON.parse(JSON.stringify(weapon)); //deep copy
     ref_object.weapon_upgraded = weapon_upgraded;
 
     ref_object_base.weaponClass = weapon.weaponClass;
