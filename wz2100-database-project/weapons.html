@@ -165,7 +165,7 @@ function DrawWeaponList() {
                 collected_weapons[weapon.grid_id] = 1;
                 return true;
             };
-            var elem = DrawSection_type1_html(tank_weapons.attr('id'), "");
+            var elem = DrawSection_type1_html(tank_weapons.attr('id'), "Background");
             elem.append('\
                 <span lang="en">\
                     <span>Tank weapons are split into sections by the chosen "research line". Each section contains a list of weapons which use the same upgrades, e.g. when you research machinegun damage you increase the damage of all weapons in the MACHINE GUN section.<br/>Click on a weapon to see it\'s detailed view.</span>\
@@ -191,7 +191,7 @@ function DrawWeaponList() {
                 collected_weapons[weapon.grid_id] = 1;
                 return true;
             };
-            var elem = DrawSection_type1_html(cyborg_weapons.attr('id'), "");
+            var elem = DrawSection_type1_html(cyborg_weapons.attr('id'), "All");
             DrawWeapons(elem.attr('id'), null, func_cyborgs_weapons);
         }
 
@@ -266,7 +266,7 @@ function DrawWeaponList() {
                 collected_weapons[weapon.grid_id] = 1;
                 return true;
             };
-            var elem = DrawSection_type1_html(other_weapons.attr('id'), "");
+            var elem = DrawSection_type1_html(other_weapons.attr('id'), "All");
             DrawWeapons(elem.attr('id'), null, func_other_weapons);
         }
     //});

@@ -101,7 +101,7 @@ function DrawCyborgsLists() {
 
     /* Support Cyborgs */
     {
-        var elem = DrawSection_type1_html(cyb_support.attr('id'), "");
+        var elem = DrawSection_type1_html(cyb_support.attr('id'), "All");
         var func_support_cyborgs = function (cyborg) {
             if (cyborg.weapons == undefined) {
                 return true;
@@ -113,7 +113,7 @@ function DrawCyborgsLists() {
 
     /* Light Cyborgs */
     {
-        var elem = DrawSection_type1_html(cyb_light.attr('id'), "");
+        var elem = DrawSection_type1_html(cyb_light.attr('id'), "All");
         var func_light_cyborgs = function (cyborg) {
             if (cyborg.weapons == undefined) {
                 return false;
@@ -129,7 +129,7 @@ function DrawCyborgsLists() {
 
     /* Heavy Cyborgs */
     {
-        var elem = DrawSection_type1_html(cyb_heavy.attr('id'), "");
+        var elem = DrawSection_type1_html(cyb_heavy.attr('id'), "All");
         var func_heavy_cyborgs = function (cyborg) {
             if (cyborg.weapons == undefined) {
                 return false;

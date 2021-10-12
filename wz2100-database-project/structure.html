@@ -212,8 +212,8 @@ function DrawStructuresLists() {
 
     /* Walls */
     {
-        var elem = DrawSection_type1_html(walls.attr('id'), "");
-        elem.append("Walls is cheap and well armored but sometimes better use bunkers lines instead walls :)");
+        var elem = DrawSection_type1_html(walls.attr('id'), "All");
+        elem.append("Walls are cheap and well armored but it's sometimes better to use bunkers lines instead of walls :)");
         var func_tower_struc = function (struc) {
             if (ResearchedComponents[player_all_researched][struc.grid_id] == undefined) /* Check structures can be researched */ {
                 return false;
@@ -233,8 +233,8 @@ function DrawStructuresLists() {
 
     /* Towers */
     {
-        var elem = DrawSection_type1_html(towers.attr('id'), "");
-        elem.append("Towers are weaken than hardpoints and bunkers, but some weapons available only on towers.");
+        var elem = DrawSection_type1_html(towers.attr('id'), "All");
+        elem.append("Towers are weaker than hardpoints and bunkers, but some weapons are available only on towers.");
         var func_tower_struc = function (struc) {
             if (ResearchedComponents[player_all_researched][struc.grid_id] == undefined) /* Check structures can be researched */ {
                 return false;
@@ -257,8 +257,8 @@ function DrawStructuresLists() {
 
     /* Bunkers */
     {
-        var elem = DrawSection_type1_html(bunkers.attr('id'), "");
-        elem.append("Bunkers have best armor, but bunkers very vulnerable to flamers and other incendiary weapons.");
+        var elem = DrawSection_type1_html(bunkers.attr('id'), "All");
+        elem.append("Bunkers have the best armor, but bunkers are very vulnerable to flamers and other incendiary weapons.");
         var func_bunker_struc = function (struc) {
             if (ResearchedComponents[player_all_researched][struc.grid_id] == undefined) /* Check structures can be researched */ {
                 return false;
@@ -281,8 +281,8 @@ function DrawStructuresLists() {
 
     /* Hardpoints */
     {
-        var elem = DrawSection_type1_html(hardpoints.attr('id'), "");
-        elem.append("Hardpoints are most common defense in Warzone2100.");
+        var elem = DrawSection_type1_html(hardpoints.attr('id'), "All");
+        elem.append("Hardpoints are the most common defense in Warzone 2100.");
         var func_hardpoints_struc = function (struc) {
             if (ResearchedComponents[player_all_researched][struc.grid_id] == undefined) /* Check structures can be researched */ {
                 return false;
@@ -313,8 +313,8 @@ function DrawStructuresLists() {
 
     /* Fortresses */
     {
-        var elem = DrawSection_type1_html(forts.attr('id'), "");
-        elem.append("Fortresses are equipped with most powerful weapons. Fortresses are really scary!");
+        var elem = DrawSection_type1_html(forts.attr('id'), "All");
+        elem.append("Fortresses are equipped with the most powerful weapons. Fortresses are really scary!");
         var func_forts_struc = function (struc) {
             if (ResearchedComponents[player_all_researched][struc.grid_id] == undefined) /* Check structures can be researched */ {
                 return false;
@@ -337,8 +337,8 @@ function DrawStructuresLists() {
 
     /* Artillery emplacements */
     {
-        var elem = DrawSection_type1_html(arty.attr('id'), "");
-        elem.append("Artillery have long range. Artillery batteries very useful in warzone, but they have weak armor and you need to cover artillery with another defenses.");
+        var elem = DrawSection_type1_html(arty.attr('id'), "All");
+        elem.append("Artillery have long range. Artillery batteries very useful in WZ, but they have weak armor and you need to cover artillery with another defenses.");
         var func_arty_struc = function (struc) {
             if (ResearchedComponents[player_all_researched][struc.grid_id] == undefined) /* Check structures can be researched */ {
                 return false;
@@ -366,7 +366,7 @@ function DrawStructuresLists() {
 
     /* AA */
     {
-        var elem = DrawSection_type1_html(aa_.attr('id'), "");
+        var elem = DrawSection_type1_html(aa_.attr('id'), "All");
         elem.append("Defenses against enemy air forces (anti-VTOL)");
         var func_arty_struc = function (struc) {
             if (ResearchedComponents[player_all_researched][struc.grid_id] == undefined) /* Check structures can be researched */ {
@@ -394,7 +394,7 @@ function DrawStructuresLists() {
 
     /* Other defenses */
     {
-        var elem = DrawSection_type1_html(other_def.attr('id'), "");
+        var elem = DrawSection_type1_html(other_def.attr('id'), "All");
         elem.append("Defenses which were not included in above sections.");
         var func_other_struc = function (struc) {
             if (ResearchedComponents[player_all_researched][struc.grid_id] == undefined) /* Check structures can be researched */ {
@@ -419,7 +419,7 @@ function DrawStructuresLists() {
 
     /* Unavailable buildings */
     {
-        var elem = DrawSection_type1_html(nonres_struc.attr('id'), "");
+        var elem = DrawSection_type1_html(nonres_struc.attr('id'), "All");
         elem.append("List of buildings which are not available in common game.");
         var func_forts_struc = function (struc) {
             if (listed_buildings[struc.grid_id] != undefined)
