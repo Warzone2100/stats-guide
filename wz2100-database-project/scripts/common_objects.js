@@ -1249,16 +1249,6 @@ function DrawPageHeader() {
                                 <span lang="en">Unit designer</span>\
                                 <span lang="ru">Дизайн танков</span>\
                             </a> </li>\
-                        <li>\
-                            <span style="float:right">\
-                                <span lang="en">Language:</span>\
-                                <span lang="ru">Выберите язык:</span>\
-                            <select id="lang_select" onchange="languageChange(this.value)">\
-                                <option value="en">English (en)</option>\
-                                <option value="ru">Русский (ru)</option>\
-                            </select>              \
-                            </span>\
-                        </li>\
         </ul>\
         				\
 \
