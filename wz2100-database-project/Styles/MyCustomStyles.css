@@ -2,9 +2,9 @@
 ----------------------------------------------------------*/
 
 
-@import url("../scripts/jquery-ui-1.12.1.custom/jquery-ui.css");
-@import url("../scripts/jquery-ui-1.12.1.custom/jquery-ui.structure.css");
-@import url("../scripts/jquery-ui-1.12.1.custom/jquery-ui.theme.css");
+@import url("../scripts/jquery-ui-1.13.0.custom/jquery-ui.css");
+@import url("../scripts/jquery-ui-1.13.0.custom/jquery-ui.structure.css");
+@import url("../scripts/jquery-ui-1.13.0.custom/jquery-ui.theme.css");
 
 @font-face {
     font-family: 'ExoBold';
