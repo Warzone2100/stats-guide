@@ -54,7 +54,7 @@ var TerrainTypesIndexes = [
     'TER_SLUSH',
 ];
 
-var current_site_version = "2.32";
+var current_site_version = "4.2.0-beta1";
 
 $(function () {
 
