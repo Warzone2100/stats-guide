@@ -1177,31 +1177,19 @@ function DrawPageHeader() {
 <div class="nav ui-widget ui-corner-bottom" style=";margin-top:-25px;margin-bottom:10px;">\
                 	<div class="fl">\
                     	<ul>\
-							    <li class=""><a href="http://wz2100.net">FrontPage (News)</a></li>\
-							    <li class=""><a href="http://developer.wz2100.net">Wiki/trac</a></li>\
-                                <li class="current"><a href="http://betaguide.wz2100.net/">Guide</a></li>\
-							    <li class=""><a href="http://addons.wz2100.net">Addons</a></li>\
-                                <li class=""><a href="http://developer.wz2100.net/wiki/NewFAQ">FAQ</a></li>\
-							    <li class=""><a href="http://donations.wz2100.net">Donate</a></li>\
-							    <li class=""><a href="http://forums.wz2100.net/index.php">Forum</a></li>\
-                            \
-                            	<li><a href="./search.php">Search</a></li>\
-                            \
+							    <li class=""><a href="https://wz2100.net">Homepage</a></li>\
+							    <li class=""><a href="https://wz2100.net/news/">News</a></li>\
+                                <li class="current"><a href="https://betaguide.wz2100.net/">Guide</a></li>\
+                                <li class=""><a href="https://wz2100.net/#faq">FAQ</a></li>\
+							    <li class=""><a href="https://donations.wz2100.net">Donate</a></li>\
+							    <li class=""><a href="https://wz2100.net/webchat/">Webchat</a></li>\
                         </ul>\
                     </div>\
                     <div class="fr">\
                     	<ul>\
                             \
                                 	<li>\
-                                        <form action="http://forums.wz2100.net/search.php" method="get" id="search">\
-                                            <span lang="en">\
-                                                <input name="keywords" type="text" maxlength="128" title="Search for keywords" class="quicksearch" value="Search…" onclick="if(this.value==\'Search…\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'Search…\';">\
-                                            </span>\
-                                            <span lang="ru">\
-                                                <input name="keywords" type="text" maxlength="128" title="Поиск по ключевым словам" class="quicksearch" value="Поиск…" onclick="if(this.value==\'Поиск…\')this.value=\'\';" onblur="if(this.value==\'\')this.value=\'Поиск…\';">\
-                                            </span>\
-                                            \
-                                        </form>\
+                                        <a href="https://wz2100.net">Download Warzone 2100</a>\
                                     </li>\
                                 \
                         </ul>\
