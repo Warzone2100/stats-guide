@@ -1,4 +1,4 @@
-﻿/*
+/*
 	This file is part of 'Warzone 2100 Guide by crab'.
 
 	'Warzone 2100 Guide by crab' is free software; you can redistribute it and/or modify
