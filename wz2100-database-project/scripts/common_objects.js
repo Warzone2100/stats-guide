@@ -894,6 +894,7 @@ function DrawGrid(DataObject, container_id, on_select_callback, container_height
         grouping: DataObject.groupingView != undefined,
         groupingView: groupEnabled ? DataObject.groupingView : undefined,
         scrollrows: true,
+        autoencode: false,
     });
 
     myAddButton = function (options) {
