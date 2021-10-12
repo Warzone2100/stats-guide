@@ -1,6 +1,6 @@
-﻿var language_urls = {
-    en: 'http://en.wzone2100.ru',
-    ru: 'http://wzone2100.ru',
+var language_urls = {
+    en: 'https://betaguide.wz2100.net',
+    ru: 'https://betaguide.wz2100.net/ru',
 }
 
 
