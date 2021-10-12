@@ -35,7 +35,7 @@ $(function () {
 
     //attach click events to each tab
     //for (var i = 0; i < Objects.length; i++) {
-    //    $('#tabs_left ul:first li:eq(' + Objects[i].tab_index + ') a').click(Objects[i], function (event) {
+    //    $('#tabs_left ul:first li:eq(' + Objects[i].tab_index + ') a').on("click", null, Objects[i], function (event) {
     //        var DataObject = event.data;
     //        DataObject.LoadLeftGridFunction();
     //    });
@@ -47,11 +47,11 @@ $(function () {
     });
     Designer_PreLoad(function () { $('body').unblock(); });
 
-    $('#tabs_left ul:first li:eq(0) a').click(null, function (event) {
+    $('#tabs_left ul:first li:eq(0) a').on("click", function (event) {
 
     });
 
-    $('#tabs_left ul:first li:eq(1) a').click(null, function (event) {
+    $('#tabs_left ul:first li:eq(1) a').on("click", function (event) {
         DrawDesignComparison();
     });
 
@@ -59,7 +59,7 @@ $(function () {
         icons: {
             primary: "ui-icon-heart",
         }
-    }).click(function (event) {
+    }).on("click", function (event) {
         event.preventDefault();
         var saved_designs = [];
         if (localStorage["designer_saved_designs"] != undefined) {
@@ -103,7 +103,7 @@ function attachOpenDetailEvents() {
           $(this).removeClass('design_input_hovered');
       }
     );
-    $("#designer_body").click(
+    $("#designer_body").on("click", 
       function () {
           var tmp_id = $(this).attr('data-value');
           if (Bodies.loaded_data_hash[tmp_id] == undefined) {
@@ -135,7 +135,7 @@ function attachOpenDetailEvents() {
           $(this).removeClass('design_input_hovered');
       }
     );
-    $("#designer_propulsion").click(
+    $("#designer_propulsion").on("click", 
       function () {
           var tmp_id = $(this).attr('data-value');
           if (Propulsion.loaded_data_hash[tmp_id] == undefined) {
@@ -167,7 +167,7 @@ function attachOpenDetailEvents() {
           $(this).removeClass('design_input_hovered');
       }
     );
-    $("#designer_weapon").click(
+    $("#designer_weapon").on("click", 
       function () {
           var tmp_id = $(this).attr('data-value');
           if (Weapons.loaded_data_hash[tmp_id] == undefined) {
@@ -199,7 +199,7 @@ function attachOpenDetailEvents() {
           $(this).removeClass('design_input_hovered');
       }
     );
-    $("#designer_weapon2").click(
+    $("#designer_weapon2").on("click", 
       function () {
           var tmp_id = $(this).attr('data-value');
           if (Weapons.loaded_data_hash[tmp_id] == undefined) {

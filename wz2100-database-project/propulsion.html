@@ -32,15 +32,15 @@ $(function () {
     $("#tabs_left").tabs();
     $("#tabs_left").tabs("option", "active", 0);
 
-    $('#tabs_left ul:first li:eq(0) a').click(null, function (event) {
+    $('#tabs_left ul:first li:eq(0) a').on("click", function (event) {
         url_pushState('');
     });
 
-    $('#tabs_left ul:first li:eq(1) a').click(null, function (event) {
+    $('#tabs_left ul:first li:eq(1) a').on("click", function (event) {
         DrawDetailsTab_Init();
     });
 
-    $('#tabs_left ul:first li:eq(2) a').click(null, function (event) {
+    $('#tabs_left ul:first li:eq(2) a').on("click", function (event) {
         url_pushState('');
     });
 
@@ -233,7 +233,7 @@ function DrawDetailsTab_Init(propulsion_id) {
         icons: {
             primary: "ui-icon-triangle-1-s",
         }
-    }).click(function (event) {
+    }).on("click", function (event) {
         event.preventDefault();
         ShowSeletDialog_forDataObject(Propulsion, null, function (propulsion_id_new) {
             DrawPropulsionDetailsParameters(propulsion_id_new);
@@ -270,7 +270,7 @@ function DrawPropulsionDetailsParameters(propulsion_id) {
         $('#description_container').append(res_path_button_html);
 
         $('#show_resdetails_button_span').attr("href", "Research.html?details_id=" + research.grid_id)
-        $('#show_respath_button_span').button().click(null, function (event) {
+        $('#show_respath_button_span').button().on("click", function (event) {
             event.preventDefault();
             window.open("Research.html?tree=1&component_id=" + propulsion_id);
         }).css("font-size", "0.8em").css("margin-left", "50px");
@@ -281,7 +281,7 @@ function DrawPropulsionDetailsParameters(propulsion_id) {
         icons: {
             primary: "ui-icon-triangle-1-s",
         }
-    }).click(function (event) {
+    }).on("click", function (event) {
         event.preventDefault();
         ShowSeletDialog_forDataObject(Propulsion, propulsion_id, function (propulsion_id_new) {
             DrawPropulsionDetailsParameters(propulsion_id_new);

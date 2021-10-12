@@ -56,7 +56,7 @@ $(function () {
 
     //attach click events to each tab
     for (var i = 0; i < Objects.length; i++) {
-        $('#tabs_left ul:first li:eq(' + Objects[i].tab_index + ') a').click(Objects[i], function (event) {
+        $('#tabs_left ul:first li:eq(' + Objects[i].tab_index + ') a').on("click", null, Objects[i], function (event) {
             var DataObject = event.data;
             DataObject.LoadLeftGridFunction();
             url_pushState('?view=' + DataObject.sysid);

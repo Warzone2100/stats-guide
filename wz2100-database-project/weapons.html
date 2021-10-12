@@ -38,17 +38,17 @@ $(function () {
     $("#tabs_left").tabs();
     $("#tabs_left").tabs("option", "active", 0);
 
-    $('#tabs_left ul:first li:eq(0) a').click(null, function (event) {
+    $('#tabs_left ul:first li:eq(0) a').on("click", function (event) {
         url_pushState('');
     });
 
-    $('#tabs_left ul:first li:eq(1) a').click(null, function (event) {
+    $('#tabs_left ul:first li:eq(1) a').on("click", function (event) {
         url_pushState('?details_id=none');
         DrawDetailsTab_Init();
     });
 
 
-    $('#tabs_left ul:first li:eq(2) a').click(null, function (event) {
+    $('#tabs_left ul:first li:eq(2) a').on("click", function (event) {
         OpenDamageModifiers();
     });
 
@@ -663,7 +663,7 @@ function DrawDetailsTab_Init(weapon_id) {
         icons: {
             primary: "ui-icon-triangle-1-s",
         }
-    }).click(function (event) {
+    }).on("click", function (event) {
         event.preventDefault();
         ShowSeletDialog_forDataObject(Weapons, null, function (weap_id_new) {
             DrawWeaponDetailsParameters(weap_id_new);
@@ -687,7 +687,7 @@ function DrawWeaponDetailsParameters(weap_id) {
         icons: {
             primary: "ui-icon-triangle-1-s",
         }
-    }).click(function (event) {
+    }).on("click", function (event) {
         event.preventDefault();
         ShowSeletDialog_forDataObject(Weapons, weap_id, function (weap_id_new) {
             DrawWeaponDetailsParameters(weap_id_new);
@@ -810,7 +810,7 @@ function DrawWeaponStaticData(weapon_id) {
         $('#details_description').append(res_path_button_html);
 
         $('#show_resdetails_button_span').attr("href", "Research.html?details_id=" + research.grid_id)
-        $('#show_respath_button_span').button().click(null, function (event) {
+        $('#show_respath_button_span').button().on("click", function (event) {
             event.preventDefault();
             window.open("Research.html?tree=1&component_id=" + weapon_id);
         }).css("font-size","0.8em").css("margin-left","50px");
