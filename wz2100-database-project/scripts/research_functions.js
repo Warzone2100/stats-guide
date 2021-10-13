@@ -1798,6 +1798,7 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
             });//StaticCanvas
             // !!! WARNING: renderOnAddRemove: false  - greatly imptoves perfomance!!!
         }
+        canvas.selection = false; // disable multi-selection
 
 
         /* Setting default settings for all new objects in Fabric.js (our goal - improve perfomance) */
@@ -2267,12 +2268,12 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
             // Support dragging viewport
             canvas.on('mouse:down', function(opt) {
                 var evt = opt.e;
-                if (evt.altKey === true) {
+                // if (evt.altKey === true) {
                     this.isDragging = true;
                     this.selection = false;
                     this.lastPosX = evt.clientX;
                     this.lastPosY = evt.clientY;
-                }
+                // }
             });
             canvas.on('mouse:move', function(opt) {
                 if (this.isDragging) {
@@ -2306,7 +2307,7 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                 // for all objects, so we call setViewportTransform
                 this.setViewportTransform(this.viewportTransform);
                 this.isDragging = false;
-                this.selection = true;
+                // this.selection = true;
             });
         }
 
