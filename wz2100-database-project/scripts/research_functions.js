@@ -2030,10 +2030,11 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
         /* DRAW HOVERING EFFECTS */
         {
             /* following code allows to use object:over and object:out */
+            canvas.wzOriginalFindTarget = canvas.findTarget;
             canvas.findTarget = (function (originalFn) {
                 return function () {
                     var target = originalFn.apply(this, arguments);
-                    if (target) {
+                    if (target && !this.isDragging) {
                         if (this._wz_hoveredTarget !== target) {
                             if (this._wz_hoveredTarget) {
                                 canvas.fire('object:out', { target: this._wz_hoveredTarget });
@@ -2249,7 +2250,7 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
 
             }
             canvas.on('object:over', function (options) {
-                if (options.target && !this.isDragging) {
+                if (options.target) {
                     if (options.target.res_svg_item) {
                         var res_svg_item = options.target.res_svg_item;
                         hover_on(res_svg_item);
@@ -2281,7 +2282,7 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
             }
             canvas.on('mouse:down', function(opt) {
                 var evt = opt.e;
-                if (!this.findTarget(evt)) {
+                if (!this.wzOriginalFindTarget(evt)) {
                     this.isDragging = true;
                     this.selection = false;
                     var pos = getCanvasEventPosition(evt);
