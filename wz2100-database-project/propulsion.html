@@ -150,7 +150,7 @@ function DrawPropulsion(container_id, show_enabled) {
             {
                 label: "HP Modifier",
                 formatter: function (cellvalue, options, rowObject) {
-                    return rowObject.hitpoints + '%';
+                    return rowObject.hitpointPctOfBody + '%';
                 },
                 width: 70,
             },
@@ -324,7 +324,7 @@ function DrawPropulsionDetailsParameters(propulsion_id) {
     {
         var row = new Object;
         row.name = 'Hit Points modifier';
-        row.base = propulsion.hitpoints;
+        row.base = propulsion.hitpointPctOfBody;
         row.group = '';
         row.descr = 'Body hit points (HP) multiplied by produlsion HP modifier.';
         grid_data.push(row);
@@ -368,10 +368,9 @@ function DrawPropulsionTerrainModifiers(container_id, propulsion_id) {
     var grid_data = [];
     for (var terrainIndex in TerrainTable.loaded_data_hash) {
         var modifiers_array = TerrainTable.loaded_data_hash[terrainIndex].speedFactor;
-        var prop_type_index = PropulsionType.loaded_data_hash[propulsion.type].index_of_datarow;
         grid_data.push({
             terran_name: TerrainTypesIndexes[terrainIndex],
-            modifier: modifiers_array[prop_type_index] + '%',
+            modifier: modifiers_array[PropulsionTypeToSpeedFactorMap[propulsion.type]] + '%',
         });
     }
 

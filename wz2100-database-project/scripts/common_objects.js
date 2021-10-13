@@ -39,22 +39,32 @@ var Templates;
 var SelectedObject;
 var Objects = new Array;
 
-var TerrainTypesIndexes = [
-    'TER_SAND',
-    'TER_SANDYBRUSH',
-    'TER_BAKEDEARTH',
-    'TER_GREENMUD',
-    'TER_REDBRUSH',
-    'TER_PINKROCK',
-    'TER_ROAD',
-    'TER_WATER',
-    'TER_CLIFFFACE',
-    'TER_RUBBLE',
-    'TER_SHEETICE',
-    'TER_SLUSH',
-];
+var TerrainTypesIndexes = {
+    'sand': 'TER_SAND',
+    'sandybrush': 'TER_SANDYBRUSH',
+    'bakedearth': 'TER_BAKEDEARTH',
+    'greenmud': 'TER_GREENMUD',
+    'redbrush': 'TER_REDBRUSH',
+    'pinkrock': 'TER_PINKROCK',
+    'road': 'TER_ROAD',
+    'water': 'TER_WATER',
+    'cliff_face': 'TER_CLIFFFACE',
+    'rubble': 'TER_RUBBLE',
+    'sheetice': 'TER_SHEETICE',
+    'slush': 'TER_SLUSH',
+};
 
-var current_site_version = "4.2.0-beta1";
+var PropulsionTypeToSpeedFactorMap = {
+    "Wheeled": "wheeled",
+    "Tracked": "tracked",
+    "Legged": "legged",
+    "Hover": "hover",
+    "Lift": "lift",
+    "Propellor": "propellor",
+    "Half-Tracked": "half-tracked",
+};
+
+var current_site_version = "4.2.0-beta1-v2";
 
 $(function () {
 
@@ -151,17 +161,18 @@ function InitDataObjects() {
         obj.LoadLeftGridFunction = function () {
             var data_obj = this;
             data_obj.LoadDataFunction(data_obj, function () {
+                var SpeedFactorPropTypes = new Set();
                 /* Make terrain table more readable */
                 for (var terrainIndex in data_obj.loaded_data_hash) {
                     data_obj.loaded_data_hash[terrainIndex].terrain_name = TerrainTypesIndexes[terrainIndex];
                     var vect = data_obj.loaded_data_hash[terrainIndex].speedFactor;
-                    for (var prop_index in vect) {
-                        var prop_type = PropulsionType.loaded_data[prop_index].grid_id;
-                        data_obj.loaded_data_hash[terrainIndex][prop_type] = vect[prop_index];
+                    for (var prop_name in vect) {
+                        data_obj.loaded_data_hash[terrainIndex][prop_name] = vect[prop_name];
+                        SpeedFactorPropTypes.add(prop_name);
                     }
                 }
                 data_obj.grid_colModel = JSON.parse(JSON.stringify(data_obj.grid_colModel_default));
-                for (var prop_type in PropulsionType.loaded_data_hash) {
+                for (let prop_type of SpeedFactorPropTypes) {
                     data_obj.grid_colModel.push(
                     {
                         name: prop_type, width: "55px", fixed: true
@@ -954,10 +965,12 @@ function LoadDataObject(DataObject, callback_function) {
                 grid_data.push(data_row);
 
                 for (var propertyName in data_row) {
-                    var isNumber = !isNaN(data_row[propertyName]);
-                    if (isNumber) {
-                        //try convert all strings to numbers if possible (was unable to do this in php_parse_ini)
-                        data_row[propertyName] = parseInt(data_row[propertyName]);
+                    //try convert all strings to numbers if possible (was unable to do this in php_parse_ini)
+                    let numberValue = Number(data_row[propertyName]);
+                    let isNumber = !isNaN(numberValue);
+                    if (isNumber)
+                    {
+                        data_row[propertyName] = numberValue;
                     }
                     if (fields_dict[propertyName] == undefined) {
                         fields_dict[propertyName] = 1;

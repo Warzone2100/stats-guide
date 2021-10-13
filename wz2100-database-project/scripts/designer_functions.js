@@ -1621,8 +1621,8 @@ function CalculateTankDesign(player, turrets, body, propulsion, non_weapon_desig
             vtol_speed_modifier = 0.75;
         }
     }
-    var terrain_modifier_road = TerrainTable.loaded_data_hash["6"].speedFactor[PropulsionType.loaded_data_hash[propulsion.type].index_of_datarow];
-    var terrain_modifier_sandybush = TerrainTable.loaded_data_hash["1"].speedFactor[PropulsionType.loaded_data_hash[propulsion.type].index_of_datarow];
+    var terrain_modifier_road = TerrainTable.loaded_data_hash["road"].speedFactor[PropulsionTypeToSpeedFactorMap[propulsion.type]];
+    var terrain_modifier_sandybush = TerrainTable.loaded_data_hash["sandybrush"].speedFactor[PropulsionTypeToSpeedFactorMap[propulsion.type]];
 
     var engine_base = (body.powerOutput * prop_modifier) / 100 * vtol_speed_modifier * speed_bonus;
     var engine_upgraded = (body_upgraded.powerOutput * prop_modifier) / 100 * vtol_speed_modifier * speed_bonus;
