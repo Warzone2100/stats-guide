@@ -1588,7 +1588,7 @@ function CalculateTankDesign(player, turrets, body, propulsion, non_weapon_desig
         for (var i = 0; i < turrets_num; i++) {
             turret_hp += turrets[i].hitpoints == undefined ? 0 : turrets[i].hitpoints;
         }
-        var hp = body.hitpoints + (body.hitpoints * propulsion.hitpoints) / 100 + turret_hp;
+        var hp = body.hitpoints + (body.hitpoints * propulsion.hitpointPctOfBody) / 100 + turret_hp;
         var percent_upgrade = body_upgraded.hitpoints_percentage == undefined ? 0 : body_upgraded.hitpoints_percentage;
         TankDesign.baseStats.hitpoints = hp;
         TankDesign.hitpoints = hp + hp * percent_upgrade / 100;
