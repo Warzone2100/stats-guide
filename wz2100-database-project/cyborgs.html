@@ -181,6 +181,10 @@ function DrawCyborgs(container_id, cyb_id_list, cyborg_filter_function, col_mode
         }
         grid_data[i].armed = armed;
         grid_data[i].design_data = CalculateDesign_fromIDs(player, turret_id, body_id, propulsion_id, !armed);
+        
+        // cache a few of the pieces as top-level properties so they can be sorted on
+        grid_data[i].productionTime = grid_data[i].design_data.buildTimeSeconds_factory_nomodules;
+        grid_data[i].buildPower = grid_data[i].design_data.price;
     }
 
     grid_data.sort(function (a, b) {
@@ -286,6 +290,7 @@ function DrawCyborgs(container_id, cyb_id_list, cyborg_filter_function, col_mode
             },
             {
                 label: "Production Time",
+                name: "productionTime",
                 width: 75,
                 sorttype: "int",
                 formatter: function (cellvalue, options, rowObject) {
@@ -299,6 +304,7 @@ function DrawCyborgs(container_id, cyb_id_list, cyborg_filter_function, col_mode
             {
                 label: "Abilities",
                 width: 200,
+                sortable: false,
                 formatter: function (cellvalue, options, rowObject) {
                     if (rowObject.armed) {
                         var abils = Weapon_GetAbilities(rowObject.design_data.turrets[0]);
