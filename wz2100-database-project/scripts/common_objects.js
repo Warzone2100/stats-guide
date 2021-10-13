@@ -1202,7 +1202,10 @@ function DrawPageHeader() {
                     	<ul>\
                             \
                                 	<li>\
-                                        <a href="https://wz2100.net">Download Warzone 2100</a>\
+                                        <span id="stats_version" style="font-family: \'ExoBold\', Arial, Helvetica, sans-serif; display: block; font-size: 12px; padding: 9px 14px; color: #ccc">Stats: ';
+    html += current_site_version;
+    html += '\
+                                        </span>\
                                     </li>\
                                 \
                         </ul>\
