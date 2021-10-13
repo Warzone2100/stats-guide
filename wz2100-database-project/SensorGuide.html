@@ -34,7 +34,7 @@
         $("#tabs_left").tabs("option", "active", 0);
 
 
-        DrawSection_type1_html("left-tabs-1", "").append($('#intro1'));
+        DrawSection_type1_html("left-tabs-1", "Contents").append($('#intro1'));
         DrawSection_type1_html("left-tabs-1", "Artillery").append($('#artillery'));
         DrawSection_type1_html("left-tabs-1", "Sensors").append($('#sensors'));
         DrawSection_type1_html("left-tabs-1", "Sensor turrets").append($('#SensorsList'));
@@ -297,11 +297,11 @@ function DrawSensorList() {
 
 
                     <div id="SensorsList">
-                        <div  class="ui-widget ui-corner-all" style="padding: -2px; width:500px; display:inline-block; float:right">
+                        <div  class="ui-widget ui-corner-all" style="width:500px; display:block; padding-bottom: 20px;">
                             <div id="research_slider">
 
                             </div>
-                            <label style="font-size:0.9em; color:gray;float:right">Use slider to see numeric values for different states of research.</label>
+                            <label style="font-size:0.9em; color:gray;">Use slider to see numeric values for different states of research.</label>
                         </div>
                         <div id="SensorListContainer"></div>
                     </div>
