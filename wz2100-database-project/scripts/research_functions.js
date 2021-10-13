@@ -2249,7 +2249,7 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
 
             }
             canvas.on('object:over', function (options) {
-                if (options.target) {
+                if (options.target && !this.isDragging) {
                     if (options.target.res_svg_item) {
                         var res_svg_item = options.target.res_svg_item;
                         hover_on(res_svg_item);
@@ -2266,26 +2266,41 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
             });
 
             // Support dragging viewport
+            function getCanvasEventPosition(evt) {
+                if (evt.clientX === undefined || evt.clientX === undefined)
+                {
+                    return {
+                        x: evt.touches[0].clientX,
+                        y: evt.touches[0].clientY
+                    };
+                }
+                return {
+                    x: evt.clientX,
+                    y: evt.clientY
+                };
+            }
             canvas.on('mouse:down', function(opt) {
                 var evt = opt.e;
-                // if (evt.altKey === true) {
+                if (!this.findTarget(evt)) {
                     this.isDragging = true;
                     this.selection = false;
-                    this.lastPosX = evt.clientX;
-                    this.lastPosY = evt.clientY;
-                // }
+                    var pos = getCanvasEventPosition(evt);
+                    this.lastPosX = pos.x;
+                    this.lastPosY = pos.y;
+                }
             });
             canvas.on('mouse:move', function(opt) {
                 if (this.isDragging) {
                     var e = opt.e;
+                    var pos = getCanvasEventPosition(e);
                     var zoom = canvas.getZoom();
                     var vpt = this.viewportTransform;
                     if (zoom < 0.4) {
                         vpt[4] = 200 - canvas.wzFullViewPortWidth * zoom / 2;
                         vpt[5] = 200 - canvas.wzFullViewPortHeight * zoom / 2;
                     } else {
-                        vpt[4] += e.clientX - this.lastPosX;
-                        vpt[5] += e.clientY - this.lastPosY;
+                        vpt[4] += pos.x - this.lastPosX;
+                        vpt[5] += pos.y - this.lastPosY;
                         if (vpt[4] >= 0) {
                             vpt[4] = 0;
                         } else if (vpt[4] < canvas.getWidth() - canvas.wzFullViewPortWidth * zoom) {
@@ -2298,8 +2313,8 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                         }
                     }
                     this.requestRenderAll();
-                    this.lastPosX = e.clientX;
-                    this.lastPosY = e.clientY;
+                    this.lastPosX = pos.x;
+                    this.lastPosY = pos.y;
                 }
             });
             canvas.on('mouse:up', function(opt) {
