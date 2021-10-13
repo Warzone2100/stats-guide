@@ -1195,11 +1195,11 @@ function DrawCompTimeTable(container_id, scale, options) {
         elm_icon.hover(
             function () {
                 //this.toFront(); - this line makes animation buggy in IE 10. 
-                this.animate({ transform: "...s1.3,1.3" }, 300, 'bounce');
+                this.animate({ transform: "s1.3" }, 150, 'linear');
+                this.toFront();
             },
             function () {
-                this.animate({ transform: this.orig_form.toString() }, 500, 'bounce');
-                this.toFront(); //set to front after animation to avoid bug in IE 10
+                this.animate({ transform: this.orig_form.toString() }, 150, 'linear');
             }
             );
         elm_icon.click(function () {
