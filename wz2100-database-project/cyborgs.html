@@ -232,14 +232,14 @@ function DrawCyborgs(container_id, cyb_id_list, cyborg_filter_function, col_mode
                     res_html += '<label style="color:red" title="Thermal Armor">' + PropDescr('armourHeat').format_str(rowObject.design_data.armourHeat) + '</label>';
                     return res_html;
                 },
-                width: 70,
+                width: 60,
             },
             {
                 label: "HP", sortable: false,
                 formatter: function (cellvalue, options, rowObject) {
                     return PropDescr('hitpoints').format_str(rowObject.design_data.hitpoints);
                 },
-                width: 70,
+                width: 50,
             },
             {
                 label: "Range", sorttype: "int", formatter: function (cellvalue, options, rowObject) {
@@ -251,7 +251,7 @@ function DrawCyborgs(container_id, cyb_id_list, cyborg_filter_function, col_mode
                 formatter: function (cellvalue, options, rowObject) {
                     return WeaponDamage_htmlCell(rowObject.design_data.turrets_upgraded[0]);
                 },
-                width: 130
+                width: 100
             },
             {
                 label: "Rate of Fire", sortable: false,
@@ -271,7 +271,7 @@ function DrawCyborgs(container_id, cyb_id_list, cyborg_filter_function, col_mode
             {
                 label: "Research",
                 name: "minResearchTime",
-                width: 80,
+                width: 70,
                 sorttype: "int",
                 formatter: function (cellvalue, options, rowObject) {
                     if (cellvalue != undefined) {
@@ -286,7 +286,7 @@ function DrawCyborgs(container_id, cyb_id_list, cyborg_filter_function, col_mode
             },
             {
                 label: "Production Time",
-                width: 80,
+                width: 75,
                 sorttype: "int",
                 formatter: function (cellvalue, options, rowObject) {
                     cellvalue = rowObject.design_data.buildTimeSeconds_factory_nomodules;
@@ -298,11 +298,11 @@ function DrawCyborgs(container_id, cyb_id_list, cyborg_filter_function, col_mode
             },
             {
                 label: "Abilities",
-                width: 300,
+                width: 200,
                 formatter: function (cellvalue, options, rowObject) {
                     if (rowObject.armed) {
                         var abils = Weapon_GetAbilities(rowObject.design_data.turrets[0]);
-                        var res_html = "<ul style='margin:2px; font-size:0.9em'>";
+                        var res_html = "<ul style='margin:2px; font-size:0.9em; padding-inline-start: 15px'>";
                         for (var ability in abils) {
                             if (abils[ability]) {
                                 var des = Abilities_Description(ability);
