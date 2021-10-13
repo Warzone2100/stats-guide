@@ -275,7 +275,7 @@ function InitDataObjects() {
     {
         Bodies = {
             sysid: "Body",
-            page_url: "Body.html",
+            page_url: "body.html",
             path_json: data_directory + "body.json",
             LoadDataFunction: LoadDataObject,
             LoadLeftGridFunction: function () {
@@ -1226,7 +1226,7 @@ function DrawPageHeader() {
                                 <span lang="en">Weapons</span>\
                                 <span lang="ru">Орудия</span>\
                         </a> </li>\
-        				<li><a href="Body.html">\
+        				<li><a href="body.html">\
                                 <span lang="en">Bodies</span>\
                                 <span lang="ru">Корпуса</span>\
                         </a> </li>\
@@ -1242,7 +1242,7 @@ function DrawPageHeader() {
                                 <span lang="en">Buildings</span>\
                                 <span lang="ru">Постройки</span>\
                         </a> </li>\
-                        <li><a href="Research.html">\
+                        <li><a href="research.html">\
                                 <span lang="en">Research</span>\
                                 <span lang="ru">Исследования</span>\
                         </a> </li>\

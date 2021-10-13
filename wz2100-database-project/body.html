@@ -226,13 +226,13 @@ function DrawBodies(container_id, body_filter_function) {
                 sortable: false,
                 search: false,
                 formatter: function (cellvalue, options, rowObject) {
-                    return '<a href="Body.html?details_id=' + rowObject.grid_id + '" onclick="openBodyDetails(\'' + rowObject.grid_id + '\'); return false;">' + Bodies.GetIconHtml_Function(rowObject) + '</a>';
+                    return '<a href="body.html?details_id=' + rowObject.grid_id + '" onclick="openBodyDetails(\'' + rowObject.grid_id + '\'); return false;">' + Bodies.GetIconHtml_Function(rowObject) + '</a>';
                 },
             },
             {
                 label: " ", name: "name",
                 formatter: function (cellvalue, options, rowObject) {
-                    return '<a href="Body.html?details_id=' + rowObject.grid_id + '" onclick="openBodyDetails(\'' + rowObject.grid_id + '\'); return false;">' + cellvalue + '</a>';
+                    return '<a href="body.html?details_id=' + rowObject.grid_id + '" onclick="openBodyDetails(\'' + rowObject.grid_id + '\'); return false;">' + cellvalue + '</a>';
                 },
             },
             {
@@ -360,10 +360,10 @@ function DrawBodyDetailsParameters(body_id) {
         var res_path_button_html = '<br/>Research required: <a href="#" id="show_resdetails_button_span">' + research.name + '</a><button type="button" id="show_respath_button_span">Overview research path</button>'
         $('#description_container').append(res_path_button_html);
 
-        $('#show_resdetails_button_span').attr("href", "Research.html?details_id=" + research.grid_id)
+        $('#show_resdetails_button_span').attr("href", "research.html?details_id=" + research.grid_id)
         $('#show_respath_button_span').button().on("click", function (event) {
             event.preventDefault();
-            window.open("Research.html?tree=1&component_id=" + body_id);
+            window.open("research.html?tree=1&component_id=" + body_id);
         }).css("font-size", "0.8em").css("margin-left", "50px");
     }
 

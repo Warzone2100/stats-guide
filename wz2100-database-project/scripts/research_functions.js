@@ -2110,9 +2110,9 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                             </tr>\
                             <tr>\
                             <td>\
-                                <a href="Research.html?details_id=' + research.grid_id + '" ><span id="open_res_details_from_tree" class="span_button"><span class="ui-icon ui-icon-script" style="display:inline-block;"></span>Show Details</span></a>\
+                                <a href="research.html?details_id=' + research.grid_id + '" ><span id="open_res_details_from_tree" class="span_button"><span class="ui-icon ui-icon-script" style="display:inline-block;"></span>Show Details</span></a>\
                                 <br/>\
-                                <a href="Research.html?tree=1&component_id=' + research.grid_id + '" "><span id="open_res_path_from_tree" class="span_button"><span class="ui-icon ui-icon-transfer-e-w" style="display:inline-block;"></span>Show Path</span></a>\
+                                <a href="research.html?tree=1&component_id=' + research.grid_id + '" "><span id="open_res_path_from_tree" class="span_button"><span class="ui-icon ui-icon-transfer-e-w" style="display:inline-block;"></span>Show Path</span></a>\
                             </td>\
                             </tr>\
                             <tr>\
@@ -2355,7 +2355,7 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
 
 function DrawResearchTimeLine()
 {
-    /* See that function in Research.html */
+    /* See that function in research.html */
 
 }
 

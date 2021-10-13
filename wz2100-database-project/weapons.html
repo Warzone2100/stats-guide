@@ -809,10 +809,10 @@ function DrawWeaponStaticData(weapon_id) {
             <button type="button" id="show_respath_button_span"><span lang="en">Overview research path</span><span lang="ru">Просмотр требуемых исследований</span></button>'
         $('#details_description').append(res_path_button_html);
 
-        $('#show_resdetails_button_span').attr("href", "Research.html?details_id=" + research.grid_id)
+        $('#show_resdetails_button_span').attr("href", "research.html?details_id=" + research.grid_id)
         $('#show_respath_button_span').button().on("click", function (event) {
             event.preventDefault();
-            window.open("Research.html?tree=1&component_id=" + weapon_id);
+            window.open("research.html?tree=1&component_id=" + weapon_id);
         }).css("font-size","0.8em").css("margin-left","50px");
     }
 

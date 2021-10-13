@@ -191,13 +191,13 @@ List sorted by <b>minimum research time</b>. \
                 sortable: false,
                 search: false,
                 formatter: function (cellvalue, options, rowObject) {
-                    return '<a href="Research.html?details_id=' + rowObject.grid_id + '" onclick="ShowResearchDetails(\'' + rowObject.grid_id + '\'); return false;">' + Researches.GetIconHtml_Function(rowObject) + '</a>';
+                    return '<a href="research.html?details_id=' + rowObject.grid_id + '" onclick="ShowResearchDetails(\'' + rowObject.grid_id + '\'); return false;">' + Researches.GetIconHtml_Function(rowObject) + '</a>';
                 },
             },
             {
                 label: " ", name: "name",
                 formatter: function (cellvalue, options, rowObject) {
-                    return '<a href="Research.html?details_id=' + rowObject.grid_id + '" onclick="ShowResearchDetails(\'' + rowObject.grid_id + '\'); return false;">' + cellvalue + '</a>';
+                    return '<a href="research.html?details_id=' + rowObject.grid_id + '" onclick="ShowResearchDetails(\'' + rowObject.grid_id + '\'); return false;">' + cellvalue + '</a>';
                 },
             },
             
@@ -427,7 +427,7 @@ function DrawResearchDetailsParameters(research_id) {
             $('#details_description').append(res_path_button_html);
             $('#show_respath_button_span').button().click(null, function (event) {
                 event.preventDefault();
-                window.open("Research.html?tree=1&component_id=" + research_id);
+                window.open("research.html?tree=1&component_id=" + research_id);
             }).css("font-size", "0.8em");
         }
     }
@@ -1523,13 +1523,13 @@ function show_short_res_table(container_id, grid_data)
                     sortable: false,
                     search: false,
                     formatter: function (cellvalue, options, rowObject) {
-                        return '<a href="Research.html?details_id=' + rowObject.grid_id + '" onclick="ShowResearchDetails(\'' + rowObject.grid_id + '\'); return false;">' + Researches.GetIconHtml_Function(rowObject) + '</a>';
+                        return '<a href="research.html?details_id=' + rowObject.grid_id + '" onclick="ShowResearchDetails(\'' + rowObject.grid_id + '\'); return false;">' + Researches.GetIconHtml_Function(rowObject) + '</a>';
                     },
                 },
                 {
                     label: " ", name: "name",
                     formatter: function (cellvalue, options, rowObject) {
-                        return '<a href="Research.html?details_id=' + rowObject.grid_id + '" onclick="ShowResearchDetails(\'' + rowObject.grid_id + '\'); return false;">' + cellvalue + '</a>';
+                        return '<a href="research.html?details_id=' + rowObject.grid_id + '" onclick="ShowResearchDetails(\'' + rowObject.grid_id + '\'); return false;">' + cellvalue + '</a>';
                     },
                 },
 
