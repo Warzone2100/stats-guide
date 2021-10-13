@@ -498,3 +498,25 @@ h4
     margin-top: 7px;
     margin-bottom: 1px;
 }
+
+/* Overlay for when JS is disabled */
+
+.noscript-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color:rgba(0,0,0,0.7);
+    z-index: 9999999;
+}
+
+.noscript-overlay p {
+    margin: 0 auto;
+    padding: 50px 50px;
+    display: block;
+    background-color:#ddd;
+    font-family:"ExoDemiBold", Arial, Helvetica, sans-serif;
+    font-size: 2em;
+    text-align: center;
+}
