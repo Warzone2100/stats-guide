@@ -760,16 +760,14 @@ function DrawHorizontalScrollbar(container_id, parent_container_id, canvas) {
         this.current_hscroll = ui.value;
     }
     });
-    canvas.on('mouse:move', function(opt) {
-        if (this.isDragging) {
-            var zoom = canvas.getZoom();
-            var vpt = this.viewportTransform;
-            // update horizontal scrollbar position
-            var width_to_scroll = canvas.wzFullViewPortWidth * canvas.getZoom() - canvas.width;
-            var amountScrolled = Math.abs(canvas.viewportTransform[4]);
-            var newValue = (amountScrolled / width_to_scroll) * 100;
-            $("#" + container_id).slider( "option", "value", newValue );
-        }
+    canvas.on('wz:scrolled:viewport', function(opt) {
+        var zoom = canvas.getZoom();
+        var vpt = this.viewportTransform;
+        // update horizontal scrollbar position
+        var width_to_scroll = canvas.wzFullViewPortWidth * canvas.getZoom() - canvas.width;
+        var amountScrolled = Math.abs(canvas.viewportTransform[4]);
+        var newValue = (amountScrolled / width_to_scroll) * 100;
+        $("#" + container_id).slider( "option", "value", newValue );
     });
 }
 

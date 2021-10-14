@@ -2290,29 +2290,35 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                     this.lastPosY = pos.y;
                 }
             });
+            canvas.wzScrollViewportFunc = function(xDelta, yDelta) {
+                var zoom = this.getZoom();
+                var vpt = this.viewportTransform;
+                if (zoom < 0.4) {
+                    vpt[4] = 200 - this.wzFullViewPortWidth * zoom / 2;
+                    vpt[5] = 200 - this.wzFullViewPortHeight * zoom / 2;
+                } else {
+                    vpt[4] += xDelta;
+                    vpt[5] += yDelta;
+                    if (vpt[4] >= 0) {
+                        vpt[4] = 0;
+                    } else if (vpt[4] < this.getWidth() - this.wzFullViewPortWidth * zoom) {
+                        vpt[4] = this.getWidth() - this.wzFullViewPortWidth * zoom;
+                    }
+                    if (vpt[5] >= 0) {
+                        vpt[5] = 0;
+                    } else if (vpt[5] < this.getHeight() - this.wzFullViewPortHeight * zoom) {
+                        vpt[5] = this.getHeight() - this.wzFullViewPortHeight * zoom;
+                    }
+                }
+                canvas.fire('wz:scrolled:viewport', null);
+            };
             canvas.on('mouse:move', function(opt) {
                 if (this.isDragging) {
                     var e = opt.e;
                     var pos = getCanvasEventPosition(e);
-                    var zoom = canvas.getZoom();
+                    var zoom = this.getZoom();
                     var vpt = this.viewportTransform;
-                    if (zoom < 0.4) {
-                        vpt[4] = 200 - canvas.wzFullViewPortWidth * zoom / 2;
-                        vpt[5] = 200 - canvas.wzFullViewPortHeight * zoom / 2;
-                    } else {
-                        vpt[4] += pos.x - this.lastPosX;
-                        vpt[5] += pos.y - this.lastPosY;
-                        if (vpt[4] >= 0) {
-                            vpt[4] = 0;
-                        } else if (vpt[4] < canvas.getWidth() - canvas.wzFullViewPortWidth * zoom) {
-                            vpt[4] = canvas.getWidth() - canvas.wzFullViewPortWidth * zoom;
-                        }
-                        if (vpt[5] >= 0) {
-                            vpt[5] = 0;
-                        } else if (vpt[5] < canvas.getHeight() - canvas.wzFullViewPortHeight * zoom) {
-                            vpt[5] = canvas.getHeight() - canvas.wzFullViewPortHeight * zoom;
-                        }
-                    }
+                    this.wzScrollViewportFunc(pos.x - this.lastPosX, pos.y - this.lastPosY);
                     this.requestRenderAll();
                     this.lastPosX = pos.x;
                     this.lastPosY = pos.y;
@@ -2325,6 +2331,23 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                 this.isDragging = false;
                 // this.selection = true;
             });
+            canvas.on('mouse:wheel', function(opt) {
+                if (!this.isDragging) {
+                    var deltaX = opt.e.deltaX;
+                    if (deltaX != 0 && (Math.abs(deltaX) > (2 * Math.abs(opt.e.deltaY)))) {
+                        if (opt.e.webkitDirectionInvertedFromDevice) deltaX = -deltaX;
+                        var originalX = this.viewportTransform[4];
+                        this.wzScrollViewportFunc(deltaX, 0);
+                        var afterX = this.viewportTransform[4];
+                        if (afterX != originalX)
+                        {
+                            this.requestRenderAll();
+                            opt.e.preventDefault();
+                            opt.e.stopPropagation();
+                        }
+                    }
+                }
+            })
         }
 
         //$('body').append('<img src="' + canvas.toDataURL('png') + '" >');
