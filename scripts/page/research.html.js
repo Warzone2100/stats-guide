@@ -101,6 +101,30 @@ $(window).on("popstate", function (event) {
     }
 });
 
+var currentCanvas;
+function setCurrentCanvas(canvas) {
+    currentCanvas = canvas;
+    resizeCanvas();
+}
+function resizeCanvas() {
+    if (currentCanvas != undefined) {
+        $(currentCanvas.wrapperEl).hide();
+        var newWidth = Math.max($('#research_tree_container').width(), 900);
+        if (newWidth != currentCanvas.getWidth()) {
+            currentCanvas.setWidth(newWidth);
+            currentCanvas.requestRenderAll();
+        }
+        $(currentCanvas.wrapperEl).show();
+    }
+}
+var canvasResizeTimeoutId;
+$(window).on('resize', function(){
+    if (currentCanvas != undefined) {
+        clearTimeout(canvasResizeTimeoutId);
+        canvasResizeTimeoutId = setTimeout(resizeCanvas, 250);
+    }
+});
+
 function SelectContentByURLData()
 {
     var uri_vars = getUrlVars();
@@ -251,12 +275,14 @@ function ShowResearchTree(options_type2) {
     var scale_slider = DrawScaleSlider("tree_scale_slider_container", 200, function (value) {
         var scale = value / 100;
         DrawResearchTree("restree_container", scale, tree_options, options_type2, function (canvas) {
+            setCurrentCanvas(canvas);
             DrawHorizontalScrollbar('canvas_hscroll', 'research_tree_container', canvas);
         });
     });
     DrawHorizontalOptionsMenu(options_div_id, tree_options, function () {
         var scale = scale_slider.slider("value") / 100;
         DrawResearchTree("restree_container", scale, tree_options, options_type2, function (canvas) {
+            setCurrentCanvas(canvas);
             DrawHorizontalScrollbar('canvas_hscroll', 'research_tree_container', canvas);
         });
     });
@@ -286,6 +312,7 @@ function ShowResearchTree(options_type2) {
     }
 
     DrawResearchTree("restree_container", 2, tree_options, options_type2, function (canvas) {
+        setCurrentCanvas(canvas);
         var container = $('#load_as_image_btn_container');
         if (container.length > 0)
         {
