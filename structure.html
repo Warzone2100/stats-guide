@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <script src="scripts/jquery-2.2.4.min.js"></script>
+    <script src="scripts/jquery-ui-1.13.0.custom/jquery-ui.js"></script>
+    <script src="scripts/jquery.blockUI.js"></script>
+    <link href="Styles/MyCustomStyles.css" rel="stylesheet" />
+
+    <link href="scripts/jquery.jqGrid-4.15.5/css/ui.jqgrid.min.css" rel="stylesheet" />
+    <script src="scripts/jquery.jqGrid-4.15.5/jquery.jqgrid.min.js"></script>
+    <script type="text/javascript" src="scripts/jquery.jqGrid-4.15.5/i18n/grid.locale-en.js"></script>
+    <script src="scripts/jquery.blockUI.js"></script>
+
+    <script src="scripts/icons_files_list.js?v=4"></script>
+    <script src="scripts/MyCustomScripts2.js?v=4"></script>
+    <link href="Styles/MyLocalization.css" rel="stylesheet" />
+    <script src="scripts/MyLocalization.js?v=4"></script>
+    <script src="scripts/common_objects.js?v=4"></script>
+    <script src="scripts/designer_functions.js?v=4"></script>
+    <script src="scripts/research_functions.js?v=4"></script>
+
+    <script src="scripts/properties_desription.js"></script>
+
+    <title>Warzone 2100 Guide • Buildings</title>
+
+<script>
+
+var player = 0;
+
+$(function () {
+
+    InitDataObjects();
+    $("#tabs_left").tabs();
+    $("#tabs_left").tabs("option", "active", 0);
+
+    $('#tabs_left ul:first li:eq(0) a').on("click", function (event) {
+        url_pushState('');
+    });
+
+    $('#tabs_left ul:first li:eq(1) a').on("click", function (event) {
+        DrawDetailsTab_Init();
+    });
+
+    var res_time = 600;
+
+    ShowLoading('tabs_left');
+    DrawSection_type1_html("intro", "Intoduction").append($('#intro_content'));
+    //DrawSection_type1_html("intro", "Intoduction").append($('#intro_content'));
+    LoadAllObjects(function () {
+        DoResearchAll(player_all_researched,true, function () {
+            DrawResearchSlider("research_slider",
+                res_time,
+                function (value) {
+                    DoResearch(value, player, function () {
+                        DrawStructuresLists();
+                    }, false);
+                });
+            DoResearch(res_time, player, function () {
+                DrawStructuresLists();
+            }, false);
+            HideLoading('tabs_left');
+            SelectContentByURLData();
+        });
+    });
+
+});
+
+$(window).on("popstate", function (event) {
+    /* Chrome, Opera, Firefox - page load / forward/backward */
+    /* IE - forward/backward
+    event.originalEvent.state == null when onpopstate triggered in Chrome/Firefox
+    */
+    if (event.originalEvent.state) {  //this called also on PAGE FIRST LOAD
+        console.log('onpopstate triggered');
+        SelectContentByURLData();
+    }
+});
+
+function SelectContentByURLData() {
+    if (getUrlVars()["details_id"] == undefined) {
+        $("#tabs_left").tabs("option", "active", 0);
+    } else {
+        DrawDetailsTab_Init(getUrlVars()["details_id"]);
+    }
+}
+
+function DrawStructuresLists() {
+    listed_buildings = {};
+    var collected_strucs = {};
+    $('#base_struc_header').html('');
+    $('#walls_header').html('');
+    $('#towers_header').html('');
+    $('#bunkers_header').html('');
+    $('#hardpoints_header').html('');
+    $('#forts_header').html('');
+    $('#arty_header').html('');
+    $('#aa_header').html('');
+    $('#other_def_header').html('');
+    $('#other_struc_header').html('');
+    var base_struc = DrawSection_type2_html("base_struc_header", "Base buildings");
+    var walls = DrawSection_type2_html("walls_header", "Walls");
+    var towers = DrawSection_type2_html("towers_header", "Towers");
+    var bunkers = DrawSection_type2_html("bunkers_header", "Bunkers");
+    var hardpoints = DrawSection_type2_html("hardpoints_header", "Hardpoints");
+    var forts = DrawSection_type2_html("forts_header", "Fortresses");
+    var arty = DrawSection_type2_html("arty_header", "Artillery emplacements");
+    var aa_ = DrawSection_type2_html("aa_header", "Anti-Air batteries");
+    var other_def = DrawSection_type2_html("other_def_header", "Other defenses");
+    var nonres_struc = DrawSection_type2_html("other_struc_header", "Unavailable buildings");
+
+    
+    var grid_trucks = $(ResetGridContainer("truck_stats_container"));
+    grid_data = [Construction.loaded_data_hash["Spade1Mk1"], Construction.loaded_data_hash["CyborgSpade"]];
+    grid_trucks.jqGrid
+    ({
+        datatype: "local",
+        data: grid_data,
+        rowNum: grid_data.length,
+        height: 'auto',
+        colModel: [{
+            name: 'pic',
+            width: '65px',
+            sortable: false,
+            search: false,
+            formatter: function (cellvalue, options, rowObject) {
+                if (Construction.GetIconHtml_Function == undefined) {
+                    return '';
+                }
+                return Construction.GetIconHtml_Function(rowObject);
+            }
+        }].concat(Construction.grid_colModel),
+        loadonce: true,
+    });
+
+
+
+    /* Base Structures */
+
+    {
+        var elem = DrawSection_type1_html(base_struc.attr('id'), "Command Center");
+        DrawStructures(elem.attr('id'), ["A0CommandCentre"], null);
+        elem.append("The Command Center is the heart of every Warzone base. It's needed for three things: To design units, to show the minimap and to research any defensive structures.");
+                    
+    }
+    {
+        var elem = DrawSection_type1_html(base_struc.attr('id'), "Power Generator");
+        DrawStructures(elem.attr('id'), ["A0PowerGenerator", "A0PowMod1"], null);
+        elem.append("The power generator in conjunction with oil derricks gives the player power. One power generator is needed for every four oil derricks, or the oil derricks will not function. Additional power generators will not generate any more power.\
+                    <br />The power module gives power faster (+50.9% to the power multipliers - note that this is in addition to the fact that researching Power Module sets the base multiplier to 125%).");
+                    
+    }
+    {
+        var elem = DrawSection_type1_html(base_struc.attr('id'), "Researh Facility");
+        DrawStructures(elem.attr('id'), ["A0ResearchFacility", "A0ResearchModule1"], null);
+        elem.append("The research facility allows the player to research upgrades and new technologies. One research facility can research one technology at a time, and research cannot be queued.\
+                    <br />The research module allows for faster research (+85.7% to the current research multiplier).");
+                    
+    }
+
+    {
+        var elem = DrawSection_type1_html(base_struc.attr('id'), "Factories");
+        DrawStructures(elem.attr('id'), ["A0LightFactory", "A0FacMod1", "A0CyborgFactory", "A0VTolFactory1"], null);
+        elem.append($("#factories_description"));
+    }
+
+    {
+        var elem = DrawSection_type1_html(base_struc.attr('id'), "Command Relay Center");
+        elem.append("The Command Relay Center is required to make Commanders (tanks with Command Turrets). Commanders provide bonuses to units assigned to them.");
+        DrawStructures(elem.attr('id'), ["A0ComDroidControl"], null);
+    }
+               
+    {
+        var elem = DrawSection_type1_html(base_struc.attr('id'), "Other");
+        DrawStructures(elem.attr('id'), ["A0RepairCentre3", "A0VtolPad", "A0ResourceExtractor"], null);
+    }
+
+    {
+        var elem = DrawSection_type1_html(base_struc.attr('id'), "Sensor Structures");
+        elem.append("Sensor structures are used to reveal map. Sensor towers are useful at aiming artillery fire at enemies at long range.<br/><i>Satellite Uplink</i> is unique structure which reveals whole map.");
+        var func_sensor_struc = function (struc) {
+            if (struc.sensorID != undefined) {
+                if (ResearchedComponents[player_all_researched][struc.grid_id] == undefined) /* Check Body can be researched */ {
+                    return false;
+                }
+                var sens = Sensor.loaded_data_hash[struc.sensorID];
+                if (sens != undefined) {
+                    if (sens.location != undefined) {
+                        return sens.location == "TURRET";
+                    }
+                }
+            }
+            return false;
+        };
+        DrawStructures(elem.attr('id'), null, func_sensor_struc);
+    }
+
+    /* DEFENSIVE STRUCTURES */
+
+    var damage_columns = [
+        {
+            name: "Weapon_name",
+            label: "weapon",
+            formatter: function (cellvalue, options, rowObject) {
+                return rowObject.hitpoints;
+            },
+        },
+
+    ];
+
+    var collected_defenses = {};
+
+    /* Walls */
+    {
+        var elem = DrawSection_type1_html(walls.attr('id'), "All");
+        elem.append("Walls are cheap and well armored but it's sometimes better to use bunkers lines instead of walls :)");
+        var func_tower_struc = function (struc) {
+            if (ResearchedComponents[player_all_researched][struc.grid_id] == undefined) /* Check structures can be researched */ {
+                return false;
+            }
+            if (struc.weapons != undefined) {
+                return false;
+            }
+
+            if (struc.type == "WALL" || struc.type == "GATE" || struc.type  == "CORNER WALL") {
+                collected_defenses[struc.grid_id] = 1;
+                return true;
+            }
+            return false;
+        };
+        DrawStructures(elem.attr('id'), null, func_tower_struc);
+    }
+
+    /* Towers */
+    {
+        var elem = DrawSection_type1_html(towers.attr('id'), "All");
+        elem.append("Towers are weaker than hardpoints and bunkers, but some weapons are available only on towers.");
+        var func_tower_struc = function (struc) {
+            if (ResearchedComponents[player_all_researched][struc.grid_id] == undefined) /* Check structures can be researched */ {
+                return false;
+            }
+            if (struc.weapons == undefined) {
+                return false;
+            }
+            if (collected_defenses[struc.grid_id] != undefined) {
+                return false;
+            }
+                        
+            if (struc.name.toLowerCase().indexOf("tower") >= 0) {
+                collected_defenses[struc.grid_id] = 1;
+                return true;
+            }
+            return false;
+        };
+        DrawStructures(elem.attr('id'), null, func_tower_struc);
+    }
+
+    /* Bunkers */
+    {
+        var elem = DrawSection_type1_html(bunkers.attr('id'), "All");
+        elem.append("Bunkers have the best armor, but bunkers are very vulnerable to flamers and other incendiary weapons.");
+        var func_bunker_struc = function (struc) {
+            if (ResearchedComponents[player_all_researched][struc.grid_id] == undefined) /* Check structures can be researched */ {
+                return false;
+            }
+            if (struc.weapons == undefined) {
+                return false;
+            }
+            if (collected_defenses[struc.grid_id] != undefined) {
+                return false;
+            }
+
+            if (struc.strength == "BUNKER") {
+                collected_defenses[struc.grid_id] = 1;
+                return true;
+            }
+            return false;
+        };
+        DrawStructures(elem.attr('id'), null, func_bunker_struc);
+    }
+
+    /* Hardpoints */
+    {
+        var elem = DrawSection_type1_html(hardpoints.attr('id'), "All");
+        elem.append("Hardpoints are the most common defense in Warzone 2100.");
+        var func_hardpoints_struc = function (struc) {
+            if (ResearchedComponents[player_all_researched][struc.grid_id] == undefined) /* Check structures can be researched */ {
+                return false;
+            }
+            if (struc.weapons == undefined) {
+                return false;
+            }
+            if (collected_defenses[struc.grid_id] != undefined) {
+                return false;
+            }
+
+            //var weap = Weapons.loaded_data_hash[struc.weapons]; //need skip "whirlwind hardpoint" because its is belongs to AA-
+            //if (weap != undefined) {
+            //    var abils = Weapon_GetAbilities(weap);
+            //    if (abils.CanHitVtols && abils.CannotHitGround) {
+            //        return false;
+            //    }
+            //}
+
+            if (struc.name.toLowerCase().indexOf("hardpoint") >= 0) {
+                collected_defenses[struc.grid_id] = 1;
+                return true;
+            }
+            return false;
+        };
+        DrawStructures(elem.attr('id'), null, func_hardpoints_struc);
+    }
+
+    /* Fortresses */
+    {
+        var elem = DrawSection_type1_html(forts.attr('id'), "All");
+        elem.append("Fortresses are equipped with the most powerful weapons. Fortresses are really scary!");
+        var func_forts_struc = function (struc) {
+            if (ResearchedComponents[player_all_researched][struc.grid_id] == undefined) /* Check structures can be researched */ {
+                return false;
+            }
+            if (struc.weapons == undefined) {
+                return false;
+            }
+            if (collected_defenses[struc.grid_id] != undefined) {
+                return false;
+            }
+
+            if (struc.name.toLowerCase().indexOf("fortress") >= 0 || struc.structureModel == "STWPFCAN.PIE") {
+                collected_defenses[struc.grid_id] = 1;
+                return true;
+            }
+            return false;
+        };
+        DrawStructures(elem.attr('id'), null, func_forts_struc);
+    }
+
+    /* Artillery emplacements */
+    {
+        var elem = DrawSection_type1_html(arty.attr('id'), "All");
+        elem.append("Artillery have long range. Artillery batteries very useful in WZ, but they have weak armor and you need to cover artillery with another defenses.");
+        var func_arty_struc = function (struc) {
+            if (ResearchedComponents[player_all_researched][struc.grid_id] == undefined) /* Check structures can be researched */ {
+                return false;
+            }
+            if (struc.weapons == undefined) {
+                return false;
+            }
+            if (collected_defenses[struc.grid_id] != undefined) {
+                return false;
+            }
+
+            var weap = Weapons.loaded_data_hash[struc.weapons];
+            if (weap != undefined) {
+                var abils = Weapon_GetAbilities(weap);
+                if (abils.Indirect) {
+                    collected_defenses[struc.grid_id] = 1;
+                    return true;
+                }
+            }
+            return false;
+        };
+        DrawStructures(elem.attr('id'), null, func_arty_struc);
+    }
+                
+
+    /* AA */
+    {
+        var elem = DrawSection_type1_html(aa_.attr('id'), "All");
+        elem.append("Defenses against enemy air forces (anti-VTOL)");
+        var func_arty_struc = function (struc) {
+            if (ResearchedComponents[player_all_researched][struc.grid_id] == undefined) /* Check structures can be researched */ {
+                return false;
+            }
+            if (struc.weapons == undefined) {
+                return false;
+            }
+            if (collected_defenses[struc.grid_id] != undefined) {
+                return false;
+            }
+
+            var weap = Weapons.loaded_data_hash[struc.weapons];
+            if (weap != undefined) {
+                var abils = Weapon_GetAbilities(weap);
+                if (abils.CanHitVtols && abils.CannotHitGround) {
+                    collected_defenses[struc.grid_id] = 1;
+                    return true;
+                }
+            }
+            return false;
+        };
+        DrawStructures(elem.attr('id'), null, func_arty_struc);
+    }
+
+    /* Other defenses */
+    {
+        var elem = DrawSection_type1_html(other_def.attr('id'), "All");
+        elem.append("Defenses which were not included in above sections.");
+        var func_other_struc = function (struc) {
+            if (ResearchedComponents[player_all_researched][struc.grid_id] == undefined) /* Check structures can be researched */ {
+                return false;
+            }
+            //if (struc.weapons == undefined) {
+            //    return false;
+            //}
+            if (collected_defenses[struc.grid_id] != undefined) {
+                return false;
+            }
+
+            if (listed_buildings[struc.grid_id] != undefined) {
+                return false;
+            }
+            collected_defenses[struc.grid_id] = 1;
+            return true;
+
+        };
+        DrawStructures(elem.attr('id'), null, func_other_struc);
+    }
+
+    /* Unavailable buildings */
+    {
+        var elem = DrawSection_type1_html(nonres_struc.attr('id'), "All");
+        elem.append("List of buildings which are not available in common game.");
+        var func_forts_struc = function (struc) {
+            if (listed_buildings[struc.grid_id] != undefined)
+            {
+                return false;
+            }
+            if (ResearchedComponents[player_all_researched][struc.grid_id] == undefined) {
+                return true;
+            }
+        };
+        DrawStructures(elem.attr('id'), null, func_forts_struc);
+    }
+
+}
+
+var tmp_uniq_index = 0;
+
+var listed_buildings = {};
+function DrawStructures(container_id, struc_id_list, structure_filter_function, col_model_additions) {
+    /* prepare list of structures depending on function parameters */
+    var grid_data = [];
+    if (struc_id_list == null) {
+        for (var struc_id in Structures.loaded_data_hash) {
+            if (structure_filter_function(Structures.loaded_data_hash[struc_id])) {
+                grid_data.push(Structures.loaded_data_hash[struc_id]);
+            }
+        }
+    }else
+    {
+        for (var i = 0; i < struc_id_list.length; i++) {
+            grid_data.push(Structures.loaded_data_hash[struc_id_list[i]]);
+        }
+    }
+            
+    /* calculate parameters of structures */
+    for (var i = 0; i < grid_data.length; i++) {
+        var StucDesign = CalculateBuilding(player, grid_data[i]);
+        grid_data[i].design_data = StucDesign;
+
+        /* save listed buildings */
+        listed_buildings[grid_data[i].grid_id] = 1;
+    }
+
+    grid_data.sort(function (a, b) {
+        return a.minResearchTime - b.minResearchTime;
+    });
+
+    if (col_model_additions == undefined)
+        col_model_additions = [];
+
+    /* draw grid with given list of structures */
+    var table_id = container_id + '_table';
+    var html = '<table id="' + table_id + '" ></table>';
+    $('#' + container_id).append('<div style="margin-top:5px">' + html + '</div>');
+    var grid = $('#' + table_id);
+    grid.jqGrid
+    ({
+        datatype: "local",
+        data: grid_data,
+        rowNum: grid_data.length,
+        height: 'auto',
+        colModel:
+        [
+
+            { label: "", name: "grid_id", key: true, hidden: true },
+            {
+                label: " ",
+                name: 'pic',
+                width: '65px',
+                sortable: false,
+                search: false,
+                formatter: function (cellvalue, options, rowObject) {
+                    return '<a href="structure.html?details_id=' + rowObject.grid_id + '" onclick="openStructureDetails(\'' + rowObject.grid_id + '\'); return false;">' + Structures.GetIconHtml_Function(rowObject) + '</a>';
+                },
+            },
+            {
+                label: " ", name: "name",
+                formatter: function (cellvalue, options, rowObject) {
+                    return '<a href="structure.html?details_id=' + rowObject.grid_id + '" onclick="openStructureDetails(\'' + rowObject.grid_id + '\'); return false;">' + cellvalue + '</a>';
+                },
+            },
+            {
+                label: "Armor", sortable: false,
+                formatter: function (cellvalue, options, rowObject) {
+                    var res_html = '<label style="color:blue" title="Kinetic Armor">' + PropDescr('armourKinetic').format_str(rowObject.design_data.armourKinetic) + '</label> / ';
+
+                    res_html += '<label style="color:red" title="Thermal Armor">' + PropDescr('armourKinetic').format_str(rowObject.design_data.armourHeat) + '</label>';
+                    return res_html;
+                },
+                width: 70,
+            },
+            {
+                label: "HP", sortable: false,
+                formatter: function (cellvalue, options, rowObject) {
+                    return rowObject.design_data.hitpoints;
+                },
+                width: 70,
+            },
+            {
+                label: PropDescr('sensorRange').name, sortable: false,
+                formatter: function (cellvalue, options, rowObject) {
+                    return PropDescr('sensorRange').format_str(rowObject.design_data.sensorRange);
+                },
+                width: 100,
+            },
+            {
+                label: "Price", name: "buildPower", width: 45, formatter: function (cellvalue, options, rowObject) {
+                    return PropDescr("price").format_html(cellvalue);
+                }, sorttype: "int"
+            },
+            {
+                label: "Research",
+                name: "minResearchTime",
+                width: 80,
+                sorttype: "int",
+                formatter: function (cellvalue, options, rowObject) {
+                    if (cellvalue != undefined) {
+                        if (cellvalue < 3600) {
+                            return cellvalue.toMMSS();
+                        } else {
+                            return cellvalue.toHHMMSS();
+                        }
+                    }
+                    return ' - ';
+                },
+            },
+            {
+                label: "Build Time by 2 trucks", name: "buildTimeSeconds_2_trucks",
+                formatter: function (cellvalue, options, rowObject) {
+                    return Math.ceil(rowObject.design_data.buildTimeSeconds_2_trucks) + ' sec ';
+                },
+                align: 'center',
+                width: 100,
+            },
+        ].concat(col_model_additions),
+        onSelectRow: function (rowid) {
+        },
+        loadonce: true,
+        ignoreCase: true, //make search case insensitive
+    });
+}
+
+function openStructureDetails(structure_id) {
+    DrawDetailsTab_Init(structure_id);
+    url_pushState('?details_id=' + structure_id);
+}
+
+function DrawDetailsTab_Init(structure_id) {
+
+    $("#tabs_left").tabs("option", "active", 1);
+    var res_time = 600;
+
+    DrawResearchSlider("research_slider_details",
+        res_time,
+        function (value) {
+
+            DoResearch(value, player, function () {
+                if (structure_id == undefined) {
+                    structure_id = getUrlVars()["details_id"]; //in case when tab was opened without selected structure
+                }
+                DrawStructureDetailsParameters(structure_id);
+            });
+        });
+
+    if (structure_id != undefined) {
+        DoResearch(res_time, player, function () {
+            DrawStructureDetailsParameters(structure_id);
+            DrawStructureStaticData(structure_id);
+        });
+    }
+
+    $("#select_structure_button").button({
+        icons: {
+            primary: "ui-icon-triangle-1-s",
+        }
+    }).on("click", function (event) {
+        event.preventDefault();
+        ShowSeletDialog_forDataObject(Structures, null, function (structure_id_new) {
+            DrawStructureDetailsParameters(structure_id_new);
+            DrawStructureStaticData(structure_id_new);
+            url_pushState('?details_id=' + structure_id_new);
+        });
+    });
+}
+
+function DrawStructureDetailsParameters(structure_id) {
+    var structure = Structures.loaded_data_hash[structure_id];
+
+    if (structure != undefined) {
+        $("#structure_detail_data_container").show();
+        scrollToId('#tabs_left');
+    }
+
+    $("#select_structure_button").button({
+        icons: {
+            primary: "ui-icon-triangle-1-s",
+        }
+    }).on("click", function (event) {
+        event.preventDefault();
+        ShowSeletDialog_forDataObject(Structures, structure_id, function (structure_id_new) {
+            DrawStructureDetailsParameters(structure_id_new);
+            DrawStructureStaticData(structure_id_new);
+            url_pushState('?details_id=' + structure_id_new);
+        });
+    });
+
+    $("#structure_icon").html(Structures.GetIconHtml_Function(structure));
+    $("#structure_name_label").text(structure.name);
+    //$("#abilities_container").html(Form_Weapon_Abilities_html(structure));
+
+    /* Draw parameters of structure */
+    var design_data = CalculateBuilding(player, structure);
+    $('#structure_details_details').html('<div id="structure_details_details_container"></div>');
+    grid_data = [];
+    {
+        var row = new Object;
+        row.name = 'Price';
+        row.base = PropDescr("price").format_html(design_data.baseStats.price);
+        row.upgraded = PropDescr("price").format_html(design_data.price);
+        row.upgrade_change = ((row.upgraded - row.base) / row.base);
+        row.group = '1 Price';
+        row.descr = 'Price added to total price of tank design.';
+        grid_data.push(row);
+    }
+    {
+        var row = new Object;
+        row.name = 'Build Time by 2 trucks (sec)';
+        var bt_base = design_data.baseStats.buildTimeSeconds_2_trucks;
+        var bt_upg = design_data.buildTimeSeconds_2_trucks;
+        row.base = bt_base.toMMSS();
+        row.upgraded = bt_upg.toMMSS();
+        row.upgrade_change = ((bt_upg - bt_base) / bt_base);
+        row.group = '1 Price';
+        row.descr = '';
+        grid_data.push(row);
+    }
+    {
+        var row = new Object;
+        row.name = 'Build Time by 4 trucks (sec)';
+        var bt_base = design_data.baseStats.buildTimeSeconds_4_trucks;
+        var bt_upg = design_data.buildTimeSeconds_4_trucks;
+        row.base = bt_base.toMMSS();
+        row.upgraded = bt_upg.toMMSS();
+        row.upgrade_change = ((bt_upg - bt_base) / bt_base);
+        row.group = '1 Price';
+        row.descr = '';
+        grid_data.push(row);
+    }
+    {
+        var row = new Object;
+        row.name = 'Sensor range (tiles)';
+        row.base = (design_data.baseStats.sensorRange / 128).toInt();
+        row.upgraded = (design_data.sensorRange / 128).toInt();
+        row.upgrade_change = ((row.upgraded - row.base) / row.base);
+        row.group = 'Range';
+        row.descr = '';
+        grid_data.push(row);
+    }
+    {
+        var row = new Object;
+        row.name = 'Hit Points';
+        row.base = design_data.baseStats.hitpoints;
+        row.upgraded = design_data.hitpoints;
+        row.upgrade_change = ((row.upgraded - row.base) / row.base);
+        row.group = '2 Armour';
+        row.descr = 'Hit points are added to total hitpoint of tank design. Note: structure hitpoints become increased with each composite alloys upgrade.';
+        grid_data.push(row);
+    }
+
+    {
+        var row = new Object;
+        row.name = 'Kinetic armor';
+        row.base = design_data.baseStats.armourKinetic;
+        row.upgraded = design_data.armourKinetic.toInt();
+        row.upgrade_change = ((row.upgraded - row.base) / row.base);
+        row.group = '2 Armour';
+        row.descr = 'Armor reduces damage to minimum level 33% of damage. Kinetic armor affects damage with type KINETIC.';
+        grid_data.push(row);
+    }
+    {
+        var row = new Object;
+        row.name = 'Thermal armor';
+        row.base = design_data.baseStats.armourHeat;
+        row.upgraded = design_data.armourHeat.toInt();
+        row.upgrade_change = ((row.upgraded - row.base) / row.base);
+        row.group = '2 Armour';
+        row.descr = 'Armor reduces damage to minimum level 33% of damage. Thermal armor affects damage with type HEAT.';
+        grid_data.push(row);
+    }
+
+    if (structure.weapons == undefined) {
+        $('#structure_details_damage_modifier_container_weapon1').hide();
+        $('#structure_details_amage_modifier_container_weapon2').hide();
+        $('#structure_details_dps_table_container').hide();
+        $('#abilities_container').hide();
+    }else
+    {
+        var weapon = Weapons.loaded_data_hash[structure.weapons[0]];
+        var weapon_upgraded = GetTurretUpgrade(player, weapon.grid_id, false)[weapon.index_of_datarow];
+        grid_data = grid_data.concat(CalcWeaponRelatedParameters(weapon, weapon_upgraded));
+        $('#structure_details_damage_modifier_container_weapon1').show();
+        DrawWeaponPropulsionModifiers('structure_details_weapon_damage_modifiers_1', weapon.grid_id);
+
+        $('#structure_details_dps_table_container').show();
+        Designer_Draw_DPSTable("structure_details_dps_table", [weapon_upgraded], player);
+
+        $('#abilities_container').show();
+        $("#structure_details_weapon_abilities_container").html(Form_Weapon_Abilities_html(weapon, true));
+    }
+    DrawStructureResistance('structure_details_resistances_table_container', structure_id);
+    //structure_details_resistances_table_container
+
+    //
+
+    DrawComponentDetailsGrid(grid_data, "structure_details_details_container");
+
+    
+}
+
+function DrawStructureStaticData(structure_id) {
+
+    var structure = Structures.loaded_data_hash[structure_id];
+    $('#details_description').html('');
+
+
+    /* Draw Damage modifiers table */
+    //DrawStructurePropulsionModifiers("structure_details_damage_modifiers", structure_id);
+
+    /* Draw Research Path */
+    var res_path_data = GetResearchPath_SubTree(structure_id, player_all_researched, 5);
+    DrawResearchPath_Tree("research_path_container", res_path_data);
+
+    
+    /* UPGRADES */
+    $('#upgrades_container').html('');
+    if(structure.weapons != undefined)
+    {
+        var weapon = Weapons.loaded_data_hash[structure.weapons[0]];
+
+        /* Show link to armed weapon */
+        $('#details_description').html('Weapon armed on this structure: <a href="weapons.html?details_id=' + weapon.grid_id + '">' + weapon.name + '</a>');
+
+        $('#upgrades_container').append('<div class="ui-widget-header ui-corner-top" style="padding:2px">Damage Upgrades</div>');
+        $('#upgrades_container').append('<div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="damage_upgrades_container"></div>');
+        DrawWeaponUpgradeTable("damage_upgrades_container", weapon.grid_id, "damage");
+
+        $('#upgrades_container').append('<div class="ui-widget-header ui-corner-top" style="padding:2px">Rate-Of-Fire Upgrades</div>');
+        $('#upgrades_container').append('<div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="rof_upgrades_container"></div>');
+        DrawWeaponUpgradeTable("rof_upgrades_container", weapon.grid_id, "firePause");
+    }
+
+    /* Draw Structure Armor/HP upgrades */
+    $('#upgrades_container').append('<div class="ui-widget-header ui-corner-top" style="padding:2px">Kinectic/Thermal Armor and Hit Points Upgrades</div>');
+    $('#upgrades_container').append('<div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="armor_upgrades_container"></div>');
+    DrawStructureUpgradesTable("armor_upgrades_container", structure_id);
+
+    /* Draw Construction Time upgrades */
+    $('#upgrades_container').append('<div class="ui-widget-header ui-corner-top" style="padding:2px">Construction Time Upgrades</div>');
+    $('#upgrades_container').append('<div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="construction_upgrades_container"></div>');
+    DrawConstructionTimeUpgradesTable("construction_upgrades_container");
+
+    $('#upgrades_container').append('<div class="ui-widget-header ui-corner-top" style="padding:2px">Other upgrades</div>');
+    $('#upgrades_container').append('<div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="other_upgrades_container"></div>');
+    DrawOtherUpgrades("other_upgrades_container", structure_id);
+
+    /* Show button "Overview research path" */
+    var res_comp_row = ResearchedComponents[player_all_researched][structure_id];
+    if (res_comp_row != undefined) {
+        var research = Researches.loaded_data_hash[res_comp_row.research_id];
+        var res_path_button_html = '<br/><span lang="en">Research required:</span><span lang="ru">Требуемое исследование:</span> <a href="#" id="show_resdetails_button_span">' + research.name + '</a><button type="button" id="show_respath_button_span"><span lang="en">Overview research path</span><span lang="ru">Просмотр требуемых исследований</span></button>'
+        $('#details_description').append(res_path_button_html);
+
+        $('#show_resdetails_button_span').attr("href", "research.html?details_id=" + research.grid_id)
+        $('#show_respath_button_span').button().on("click", function (event) {
+            event.preventDefault();
+            window.open("research.html?tree=1&component_id=" + structure_id);
+        }).css("font-size", "0.8em").css("margin-left", "50px");
+    }
+}
+
+function DrawStructureUpgradesTable(container_id, structure_id) {
+    var structure = Structures.loaded_data_hash[structure_id];
+    var structure_upgraded = JSON.parse(JSON.stringify(Upgrades[player_all_researched].Building[structure.index_of_datarow])); //deep copy
+    var upgrade_log = structure_upgraded.upgrade_history;
+    var grid_data = [];
+    var research_hash_list = {};
+    var summ = {};
+    summ["armour"] = 0;
+    summ["hitpoints"] = 0;
+    summ["hitpoints2"] = 100;
+    for (var i in upgrade_log) {
+        var log_rec = upgrade_log[i];
+        if (summ[log_rec.hint] == undefined) {
+            //unsupported type of research
+            continue;
+        }
+        var research = Researches.loaded_data_hash[log_rec.research_id];
+        var row;
+        if (research_hash_list[log_rec.research_id] == undefined) {
+            row = {
+                name: research.name,
+                time_int: ResearchTime[player_all_researched][log_rec.research_id],
+                value: log_rec.value,
+                summ: summ,
+            };
+            research_hash_list[log_rec.research_id] = row;
+            grid_data.push(row);
+        }else
+        {
+            row = research_hash_list[log_rec.research_id];
+        }
+        summ[log_rec.hint] = summ[log_rec.hint] + log_rec.value;
+        row[log_rec.hint] = summ[log_rec.hint];
+    }
+
+    var grid_element_id = ResetGridContainer(container_id);
+    var grid = $(grid_element_id);
+    grid.jqGrid
+    ({
+        datatype: "local",
+        data: grid_data,
+        rowNum: grid_data.length,
+        height: '100%',
+        colModel:
+            [
+                { name: "name", label: "Research", width: '200px', fixed: true },
+                { name: "time_int", width: '50px', fixed: true, hidden: true, sorttype: "int", },
+                {
+                    label: "Research Time (min)",
+                    width: 80,
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (rowObject.time_int == undefined) {
+                            return '<label style="color:gray;font-size:0.9em;">cant research(!)</label>';
+                        }
+                        if (rowObject.time_int < 3600) {
+                            return rowObject.time_int.toMMSS();
+                        } else {
+                            return rowObject.time_int.toHHMMSS();
+                        }
+                    },
+                },
+                //{ name: "value", label: "Upgrade value", width: '100px', fixed: true, formatter: function (cellvalue, options, rowObject) { return cellvalue + '%' } },
+                { name: "armour", label: "Armour Upgrade value", width: '50px', fixed: true, formatter: function (cellvalue, options, rowObject) { return cellvalue + '%' } },
+                { name: "hitpoints", label: "HP Upgrade value", width: '50px', fixed: true, formatter: function (cellvalue, options, rowObject) { return cellvalue + '%' } },
+            ],
+        sortname: "time_int",
+        loadonce: true,
+    });
+}
+
+function DrawOtherUpgrades(container_id, structure_id) {
+    var structure = Structures.loaded_data_hash[structure_id];
+    var structure_upgraded = JSON.parse(JSON.stringify(Upgrades[player_all_researched].Building[structure.index_of_datarow])); //deep copy
+    var upgrade_log = structure_upgraded.upgrade_history;
+    var grid_data = [];
+    var summ = {};
+    for (var i in upgrade_log) {
+        var log_rec = upgrade_log[i];
+        if (log_rec.hint == "armour" || log_rec.hint == "hitpoints") {
+            continue;
+        }
+        if (summ[log_rec.hint] == undefined) {
+            summ[log_rec.hint] = 0;
+        }
+        summ[log_rec.hint] = summ[log_rec.hint] + log_rec.value;
+        var research = Researches.loaded_data_hash[log_rec.research_id];
+        var row = {
+                name: research.name,
+                time_int: ResearchTime[player_all_researched][log_rec.research_id],
+                parameter: log_rec.hint,
+                value: log_rec.value,
+                summ: summ[log_rec.hint],
+            };
+        grid_data.push(row);
+        row[log_rec.hint] = summ[log_rec.hint];
+    }
+
+    var grid_element_id = ResetGridContainer(container_id);
+    var grid = $(grid_element_id);
+    grid.jqGrid
+    ({
+        datatype: "local",
+        data: grid_data,
+        rowNum: grid_data.length,
+        height: '100%',
+        colModel:
+            [
+                { name: "name", label: "Research", width: '200px', fixed: true },
+                { name: "time_int", width: '50px', fixed: true, hidden: true, sorttype: "int", },
+                {
+                    label: "Research Time (min)",
+                    width: 80,
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (rowObject.time_int == undefined) {
+                            return '<label style="color:gray;font-size:0.9em;">cant research(!)</label>';
+                        }
+                        if (rowObject.time_int < 3600) {
+                            return rowObject.time_int.toMMSS();
+                        } else {
+                            return rowObject.time_int.toHHMMSS();
+                        }
+                    },
+                },
+                //{ name: "value", label: "Upgrade value", width: '100px', fixed: true, formatter: function (cellvalue, options, rowObject) { return cellvalue + '%' } },
+                { name: "parameter", label: "Parameter", width: '120px', fixed: true },
+                { name: "summ", label: "Value", width: '50px', fixed: true, formatter: function (cellvalue, options, rowObject) { return cellvalue + '%' } },
+            ],
+        sortname: "time_int",
+        loadonce: true,
+    });
+}
+
+
+function DrawConstructionTimeUpgradesTable(container_id) {
+    var truck_id = "Spade1Mk1";
+    var truck_index = Construction.loaded_data_hash[truck_id].index_of_datarow;
+    var truck_upgraded = JSON.parse(JSON.stringify(Upgrades[player_all_researched].Construct[truck_index])); //deep copy
+    var upgrade_log = truck_upgraded.upgrade_history;
+    var grid_data = [];
+    var summ = 0;
+    for (var i in upgrade_log) {
+        var log_rec = upgrade_log[i];
+        var research = Researches.loaded_data_hash[log_rec.research_id];
+
+        summ = summ + log_rec.value;
+        grid_data.push({
+            name: research.name,
+            time_int: ResearchTime[player_all_researched][log_rec.research_id],
+            value: log_rec.value,
+            summ: summ,
+        });
+
+    }
+
+    var grid_element_id = ResetGridContainer(container_id);
+    var grid = $(grid_element_id);
+    grid.jqGrid
+    ({
+        datatype: "local",
+        data: grid_data,
+        rowNum: grid_data.length,
+        height: '100%',
+        colModel:
+            [
+                { name: "name", label: "Research", width: '200px', fixed: true },
+                { name: "time_int", width: '50px', fixed: true, hidden: true, sorttype: "int", },
+                {
+                    label: "Research Time (min)",
+                    width: 80,
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (rowObject.time_int == undefined) {
+                            return '<label style="color:gray;font-size:0.9em;">cant research(!)</label>';
+                        }
+                        if (rowObject.time_int < 3600) {
+                            return rowObject.time_int.toMMSS();
+                        } else {
+                            return rowObject.time_int.toHHMMSS();
+                        }
+                    },
+                },
+                //{ name: "value", label: "Upgrade value", width: '100px', fixed: true, formatter: function (cellvalue, options, rowObject) { return cellvalue + '%' } },
+                { name: "summ", label: "Summ Upgrade value", width: '50px', fixed: true, formatter: function (cellvalue, options, rowObject) { return cellvalue + '%' } },
+            ],
+        sortname: "time_int",
+        loadonce: true,
+    });
+}
+
+</script>
+</head>
+<body>
+    <table class="ui-widget ui-corner-all">
+        <tr>
+            <td id="page_header">
+
+            </td>
+        </tr>
+        <tr>
+            <td id="page_caption" data-caption="Buildings Guide">
+
+            </td>
+        </tr>
+    <tr>
+        <td style="width:100%;vertical-align:top">
+            <div id="tabs_left" >
+                <ul>
+                    <li><a href="#left-tabs-1">Buildings Guide</a></li>
+                    <li><a href="#left-tabs-detail">Building detail</a></li>
+                </ul>
+
+                <div id="left-tabs-1">
+
+                    <div id="intro"></div>
+                    <div id="intro_content">
+In Warzone2100 two groups of structures exist: defensive structures and base structures. 
+<br />Base structures are used to extract oil, produce units and research technologies while defensive structures are used to defend your base structures.
+                        <table style="width:100%; margin-top:10px">
+                            <tr>
+                                <td style="width:30%; vertical-align:top">
+                                    <ul class="MyStyledLinkMenu" style="display:inline-block">
+                                        <li><a href="#base_struc_header">Base buildings</a></li>
+                                        <li><a href="#walls_header">Walls</a></li>
+                                        <li><a href="#towers_header">Towers</a></li>
+                                        <li><a href="#bunkers_header">Bunkers</a></li>
+                                        <li><a href="#hardpoints_header">Hardpoints</a></li>
+                                        <li><a href="#forts_header">Fortresses</a></li>
+                                        <li><a href="#arty_header">Artillery emplacements</a></li>
+                                        <li><a href="#aa_header">Anti-Air batteries</a></li>
+                                        <li><a href="#other_def_header">Other defenses</a></li>
+                                        <li><a href="#other_struc_header">Unavailable buildings</a></li>
+                                    </ul>
+                                </td>
+                                <td style="width:70%; vertical-align:top">
+                                    To <b>build</b> structures you need <i>trucks</i> or <i>cyborg engineers</i>.
+                                    <div id="truck_stats_container" style="margin-top:10px"></div>
+                                    <div  class="ui-widget ui-corner-all" style="padding: -2px; width:500px; display:inline-block; float:right; margin-top:30px">
+                                        <div id="research_slider">
+
+                                        </div>
+                                        <label style="font-size:0.9em; color:gray;float:right">Use slider to see numeric values for different states of research.</label>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+
+                    <div id="base_struc_header"></div>
+                    <div id="walls_header"></div>
+                    <div id="towers_header"></div>
+                    <div id="bunkers_header"></div>
+                    <div id="hardpoints_header"></div>
+                    <div id="forts_header"></div>
+                    <div id="arty_header"></div>
+                    <div id="aa_header"></div>
+                    <div id="other_def_header"></div>
+                    <div id="other_struc_header"></div>
+
+
+
+                    <span id="factories_description">
+                        Factories are needed to manufacture units: Factories produce tanks, Cyborg Factories produce cyborgs, and VTOL Factories produce VTOL aircraft.
+                        <br /><br />
+                        Factories and VTOL Factories can be upgraded with Factory Modules up to two times. This will add 100% to its production rate multiplier and allow production of larger tanks/VTOLs. One Factory Module is needed to produce tanks with medium bodies, and two Factory Modules on the same Factory are needed to produce tanks with heavy bodies.
+                        <br /><br />
+                        It takes a number of seconds equal to weight/100 to rearm a VTOL, before rearming pad upgrades.
+                    </span>
+
+                </div>
+                <div id="left-tabs-detail">
+                    <table style="width:100%">
+                        <tr>
+                            <td>
+                                <div id="selected_structure_header">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <span style="float:left" id="structure_icon"></span>
+                                            </td>
+                                            <td>
+                                                <span id="structure_name_label" style="font-size:1.2em">[...]</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </td>
+                            <td>
+                                You can see details for any structure, just select another structure. <br />
+                                <div style="width:100%;text-align:center">
+                                    <button id="select_structure_button" type="button" style="display:inline-block">Select structure...</button>
+                                </div>
+                                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <table style="width:100%">
+                                    <tr>
+                                        <td style="width:65%">
+                                            <div class="ui-accordion ui-widget ui-helper-reset" role="tablist" style="margin-top:20px">
+	                                            <h3 style="text-align:left" class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-accordion-header-active ui-state-active ui-corner-top">
+                                                    <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s" style="float:left;"></span>
+                                                    Description
+	                                            </h3>
+                                                <div id="details_description" class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active" style="display: block; text-align:left">
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style="width:35%">
+                                            <div  class="ui-widget ui-corner-all" style="padding: -2px; width:500px; display:inline-block;">
+                                            <div id="research_slider_details">
+
+                                            </div>
+                                            <label style="font-size:0.9em; color:gray;">Use slider to see numeric values for different states of research.</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr id="structure_detail_data_container" style="display:none">
+                            <td style="vertical-align:top; width:50%">
+                                <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="main_parameters_container"></div>
+
+                                <div class="ui-widget-header ui-corner-top" style="padding:2px">Detail Parameters</div>
+                                <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="structure_details_details"></div>
+
+                                <table>
+                                    <tr>
+                                        <td style="vertical-align:top">
+                                            <div class="ui-widget-header ui-corner-top" style="padding:2px">Resistances</div>
+                                            <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="structure_details_resistances_table_container"></div>
+                                        </td>
+                                        <td id="structure_details_damage_modifier_container_weapon1" style="display:none;vertical-align:top">
+                                            <div class="ui-widget-header ui-corner-top" style="padding:2px">Damage modifiers (Weapon 1)</div>
+                                            <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="structure_details_weapon_damage_modifiers_1"></div>
+                                        </td>
+                                        <td id="structure_details_damage_modifier_container_weapon2" style="display:none;vertical-align:top">
+                                            <div class="ui-widget-header ui-corner-top" style="padding:2px">Damage modifiers (Weapon 2)</div>
+                                            <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="structure_details_weapon_damage_modifiers_2"></div>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <div id="structure_details_dps_table_container">
+                                    <div class="ui-widget-header ui-corner-top" style="padding:2px">DPS stats (Damage per second)</div>
+                                    <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="structure_details_dps_table"></div>
+                                </div>
+                            </td>
+                            <td style="vertical-align:top; width:50%">
+                                <div id="abilities_container">
+                                    <div class="ui-widget-header ui-corner-top" style="padding:2px">Weapon abilities</div>
+                                    <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="structure_details_weapon_abilities_container"></div>
+                                </div>
+                                <div id="upgrades_container"></div>
+
+                                <div class="ui-widget-header ui-corner-top" style="padding:2px">Research</div>
+                                <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="research_path_container"></div>
+
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            <div id="page_comments_area">
+
+            </div>
+            </div>
+        </td>
+    </tr>
+    </table>
+
+    <div id="modifiers_container" style="display:none">
+
+    </div>
+
+        <label style="float:right; margin-right:100px; color:gray">made by crab_ ©</label>
+    
+    <noscript>
+      <div class="noscript-overlay"><p>The Warzone 2100 Guide requires Javascript.</p></div>
+    </noscript>
+</body>
+</html>

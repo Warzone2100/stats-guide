@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <script src="scripts/jquery-2.2.4.min.js"></script>
+    <script src="scripts/jquery-ui-1.13.0.custom/jquery-ui.js"></script>
+    <script src="scripts/jquery.blockUI.js"></script>
+    <link href="Styles/MyCustomStyles.css" rel="stylesheet" />
+
+    <link href="scripts/jquery.jqGrid-4.15.5/css/ui.jqgrid.min.css" rel="stylesheet" />
+    <script src="scripts/jquery.jqGrid-4.15.5/jquery.jqgrid.min.js"></script>
+    <script type="text/javascript" src="scripts/jquery.jqGrid-4.15.5/i18n/grid.locale-en.js"></script>
+    <script src="scripts/jquery.blockUI.js"></script>
+
+    <script src="scripts/icons_files_list.js?v=4"></script>
+    <script src="scripts/MyCustomScripts2.js?v=4"></script>
+    <link href="Styles/MyLocalization.css" rel="stylesheet" />
+    <script src="scripts/MyLocalization.js?v=4"></script>
+    <script src="scripts/common_objects.js?v=4"></script>
+    <title>Warzone 2100 Guide • Guide Index</title>
+
+<script>
+
+    $(function () {
+        DrawSection_type2_1_html("intro_header", "<span lang='en'>Introduction</span><span lang='ru'>Введение</span>").append($('#intro_content'));
+        DrawSection_type2_1_html("story_header", "<span lang='en'>Story</span><span lang='ru'>История</span>").append($('#story_content'));
+        DrawSection_type2_1_html("manual_header", "<span lang='en'>Manual</span><span lang='ru'>Руководство</span>").append($('#manual_content'));
+        DrawSection_type2_1_html("reference_header", "<span lang='en'>Reference</span><span lang='ru'>Справочники</span>").append($('#reference_content'));
+        DrawSection_type2_1_html("adv_header", "<span lang='en'>Advanced Strategy</span><span lang='ru'>Стратегии игры</span>").append($('#adv_content'));
+        DrawSection_type2_1_html("tools_header", "<span lang='en'>Tools</span><span lang='ru'>Инструменты</span>").append($('#tools_content'));
+
+        $("._button").button({
+            icons: {
+                primary: "ui-icon-triangle-1-e",
+            }
+        }).css("margin-top", "2px");
+
+        $("._buttonDesign").button({
+            icons: {
+                primary: "ui-icon-star",
+            }
+        }).css("margin-top", "2px");
+
+        $("._buttonDatabase").button({
+            icons: {
+                primary: "ui-icon-calculator",
+            }
+        }).css("margin-top", "2px");
+
+        $(".ui-button-text").css("font-size", "0.9em");
+
+    });
+</script>
+</head>
+<body>
+    <table class="ui-widget ui-corner-all">
+    <tr>
+        <td id="page_header" colspan="3">
+
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3">
+            
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+               
+            <div id="intro_header"></div>
+            <div id="intro_content">
+                <span lang='en'>
+                    Warzone 2100 is a real-time strategy game, originally developed by Pumpkin Studios and published by Eidos Interactive, 
+                    now developed by the Warzone 2100 Project. Compared to other real-time strategy games, it has a greater focus on artillery, 
+                    radar, and counter-battery technologies, more frequent in-game cinematic updates as game play progresses, 
+                    a massive research tree, as well as a vehicle design system.
+                </span>
+                <span lang='ru'>
+                    Warzone 2100 - это стратегия в реальном времени (RTS), в стародавние времени разработанная компанией "Pumpkin Studios". 
+                    В настоящее время Warzone 2100 разрабатывается сообществом "Warzone 2100 Project" в режиме открытого исходного кода (open source). 
+                    <br />
+                    По сравнениею с другими стратегиями, в Warzone2100 имеется система дизайна танков, огромное число доступных улучшений (исследований). Также есть интересная система система артиллерии и контр-артиллерии.
+                </span>
+                <div style="text-align:center">
+                    <a class="_button" href="introduction.html"><span lang="en">Read more...</span><span lang="ru">Узнать больше...</span></a>
+                </div>
+            </div>
+        </td>
+        <td rowspan="2" style="vertical-align:top;">
+            <div id="story_header"></div>
+            <div id="story_content">
+                <video controls="controls" width="320" height="240" preload="none">
+                    <source src="./Styles/devastation.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
+                    Video tag not supported. Download the video <a href="./Styles/devastation.mp4">here</a>.
+                </video>
+	       </div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="width:50%; vertical-align:top;">
+            <div id="manual_header"></div>
+            <div id="manual_content">
+                <a class="_button" href="introduction.html"><span lang="en">Basics</span><span lang="ru">Основы</span></a>
+                <br />
+                <a class="_button" href="keyboard_shortcuts.html"><span lang="en">Keyboard shortcuts</span><span lang="ru">"Горячие" клавиши</span></a>
+                <br />
+                <a href="stats.html" class="ui-helper-reset" >
+		            <h3 class="ui-accordion-header ui-helper-reset ui-state-active ui-corner-all ui-accordion-icons ui-state-disabled" style="width:230px">
+                        <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-e"></span>
+                        <span lang="en">Walkthrough</span><span lang="ru">Обзор</span>
+		            </h3>
+                </a>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td style="width:33%; vertical-align:top;">
+
+            <div id="reference_header"></div>
+            <div id="reference_content">
+                <a class="_button" href="structure.html"><span lang="en">Base structures</span><span lang="ru">Постройки базы</span></a> 
+                <br />
+                <a class="_button" href="structure.html#walls_header"><span lang="en">Defensive Structures</span><span lang="ru">Защитные постройки</span></a>
+                <br />
+                <a class="_button" href="weapons.html"><span lang="en">Weapons</span><span lang="ru">Орудия</span></a>
+                <br />
+                <a class="_button" href="body.html"><span lang="en">Tank bodies</span><span lang="ru">Корпуса танков</span></a>
+                <br />
+                <a class="_button" href="propulsion.html"><span lang="en">Propulsion</span><span lang="ru">Ходовая</span></a>
+                <br />
+                <a class="_button" href="cyborgs.html"><span lang="en">Cyborgs</span><span lang="ru">Киборги</span></a>
+                <br />
+                <a class="_button" href="sensorguide.html"><span lang="en">Sensors & Artillery</span><span lang="ru">Артиллерия и сенсоры</span></a>
+                <br />
+                <a class="_button" href="research.html"><span lang="en">Tech Tree</span><span lang="ru">Дерево исследований</span></a>
+	            </div>
+        </td>
+        <td style="width:33%; vertical-align:top;">
+            <div id="adv_header"></div>
+            <div id="adv_content">
+                <a class="_button" href="earlygamestrategy.html"><span lang="en">Early-game strategy</span><span lang="ru">Стратегии начала игры</span></a>
+                <br />
+                <a class="_button" href="weapons.html"><span lang="en">Weapon guide</span><span lang="ru">Руководство по орудиям</span></a>
+                <br />
+                <a class="_button" href="formulas.html"><span lang="en">Formulas</span><span lang="ru">Формулы</span></a>
+                <br />
+                <a class="_button" href="mp_ranking.html"><span lang="en">Multiplayer rankings</span><span lang="ru">Рейтинг игроков Мультиплеера</span></a>
+                <br />
+	        </div>
+        </td>
+        <td style="width:33%; vertical-align:top;">
+                <div id="tools_header"></div>
+                <div id="tools_content">
+                    <a class="_buttonDesign" href="design.html"><span lang="en">Unit designer</span><span lang="ru">Дизайн танков</span></a>
+                    <br />
+                    <a class="_buttonDatabase" href="stats.html"><span lang="en">Database</span><span lang="ru">База параметров</span></a>
+                    <br />
+	            </div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3">
+            <div id="page_comments_area">
+
+            </div>
+        </td>
+    </tr>
+</table>
+    <noscript>
+      <div class="noscript-overlay"><p>The Warzone 2100 Guide requires Javascript.</p></div>
+    </noscript>
+</body>
+</html>

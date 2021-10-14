@@ -1,0 +1,522 @@
+/* DEFAULTS
+----------------------------------------------------------*/
+
+
+@import url("../scripts/jquery-ui-1.13.0.custom/jquery-ui.css");
+@import url("../scripts/jquery-ui-1.13.0.custom/jquery-ui.structure.css");
+@import url("../scripts/jquery-ui-1.13.0.custom/jquery-ui.theme.css");
+
+@font-face {
+    font-family: 'ExoBold';
+    src: url('ExoBold/Exo-Bold-webfont.eot');
+    src: url('ExoBold/Exo-Bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('ExoBold/Exo-Bold-webfont.woff') format('woff'),
+         url('ExoBold/Exo-Bold-webfont.ttf') format('truetype'),
+         url('ExoBold/Exo-Bold-webfont.svg#ExoRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+} 
+
+@font-face {
+    font-family: 'ExoDemiBold';
+    src: url('ExoDemiBold/Exo-DemiBold-webfont.eot');
+    src: url('ExoDemiBold/Exo-DemiBold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('ExoDemiBold/Exo-DemiBold-webfont.woff') format('woff'),
+         url('ExoDemiBold/Exo-DemiBold-webfont.ttf') format('truetype'),
+         url('ExoDemiBold/Exo-DemiBold-webfont.svg#ExoDemiBold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-size: 13px;
+}
+
+.ContentBox
+{
+    padding: 10px;
+    background:#ffffff;
+    border:1px solid #bbbbbb;
+    border-radius:6px;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    width: 97%;
+    margin: 3px;
+}
+
+
+  .custom-combobox {
+    position: relative;
+    display: inline-block;
+  }
+  .custom-combobox-toggle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin-left: -1px;
+    padding: 0;
+    /* support: IE7 */
+    *height: 1.7em;
+    *top: 0.1em;
+  }
+  .custom-combobox-input {
+    margin: 0;
+    padding: 0.3em;
+  }
+
+
+  /* Start by setting display:none to make this hidden.
+   Then we position it in relation to the viewport window
+   with position:fixed. Width, height, top and left speak
+   speak for themselves. Background we set to 80% white with
+   our animation centered, and no-repeating */
+.modal {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 ) 
+                url('FhHRx.gif') 
+                50% 50% 
+                no-repeat;
+}
+
+/* When the body has the loading class, we turn
+   the scrollbar off with overflow:hidden */
+body.loading {
+    overflow: hidden;   
+}
+
+/* Anytime the body has the loading class, our
+   modal element will be visible */
+body.loading .modal {
+    display: block;
+}
+
+
+
+.ui-jqgrid tr.jqgrow td {
+    /*white-space: normal !important;*/
+
+    word-wrap: break-word !important; /* IE 5.5+ and CSS3 */
+    white-space: pre-wrap !important; /* CSS3 */
+    white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+    white-space: -pre-wrap !important; /* Opera 4-6 */
+    white-space: -o-pre-wrap !important; /* Opera 7 */
+    overflow: hidden !important;
+    height: auto !important;
+    vertical-align: middle !important;
+    padding-top: 3px !important;
+    padding-bottom: 3px !important;    
+}
+
+div.blockOverlay {
+        background: rgba( 220, 220, 220, 1.0 ) 
+                url('FhHRx.gif') 
+                50% 50% 
+                no-repeat !important;
+        z-index: 1000;
+        border: none;
+        margin: 0px;
+        padding: 0px;
+        width: 100%;
+        height: 100%;
+        top: 0px;
+        left: 0px;
+        cursor: wait;
+        position: absolute;
+}
+
+/* Стиль для заголовка колонок такблицы jqgrid, для переноса слов*/
+.ui-jqgrid .ui-jqgrid-htable th div, .ui-jqgrid-sortable  {
+    height:auto;
+    overflow:hidden;
+    white-space:normal !important;
+}
+
+.my-highlight
+{ 
+    font-weight: bold !important;
+    color: darkred;
+}
+
+.my-unchecked
+{ 
+    color: lightgrey;
+}
+
+#tooltip{
+    display: none;
+    position: absolute;
+    cursor: pointer;
+    left: 100px;
+    top: 50px;
+    border: solid 1px #eee;
+    background-color: #ffffdd;
+    padding: 10px;
+    z-index: 1000;
+}
+
+/* отступы для tabs() */
+.ui-tabs-panel {
+    padding: 0.6em 0.43em !important;
+}
+
+/* jqgrid colum header */
+th.ui-th-column div{
+        white-space:normal !important;
+        height:auto !important;
+        padding:2px;
+    }
+
+/*input[type='search'] {
+    background-image: url('FhHRx.gif');
+    background-position: 7px 7px;
+    background-repeat: no-repeat;
+}*/
+
+.SearchBox {
+    background-image: url(search-icon.png);
+    background-repeat: no-repeat !important;
+    background-position: 1px 1px;     
+    border-width: thin;
+    border-radius: 2px;
+}
+
+
+/* Положение иконок сортировки в jqgrid */
+.ui-jqgrid .ui-jqgrid-labels .s-ico .ui-grid-ico-sort {
+    
+}
+
+/*input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+  color: lightgrey;
+}
+input:-moz-placeholder, textarea:-moz-placeholder {
+  color: lightgrey;
+}*/
+
+/* Слово "Поиск" в поисковом поле */
+::-webkit-input-placeholder { 
+    color: lightgrey; text-overflow: ellipsis; 
+}
+:-moz-placeholder { 
+    color: lightgrey !important; text-overflow: ellipsis; 
+}
+::-moz-placeholder { 
+    color: lightgrey !important; text-overflow: ellipsis; 
+}
+:-ms-input-placeholder { 
+    color: lightgrey !important; text-overflow: ellipsis; 
+}
+
+.jqgrid-hidden-row {
+    display: none;
+}
+
+
+.ui-jqgrid tr.jqgrow td {
+    vertical-align:middle !important
+
+}
+
+.RowBordered {
+    border: solid !important;
+}
+
+
+.ui-jqgrid tr.jqgrow td  {
+
+    font-size:1.24em !important;
+    padding-left: 6px !important;
+    padding-right: 3px !important;
+    padding-top: 1px !important;
+    padding-bottom: 1px !important;
+}
+
+
+.menuLink a:hover {
+    border: 1px dotted;
+}
+
+.MyStyledLinkMenu a {
+    
+    line-height:1.5em;
+}
+
+.MyStyledLinkMenu a:hover {
+    
+    text-decoration:underline;
+    border:dotted thin;
+    padding:2px;
+}
+
+.my-header {
+    padding: 8px !important;
+}
+
+.center .ui-jqgrid {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.jqgrow.ui-state-highlight{ 
+    outline: 1px solid #ffcc8e !important;
+    outline-offset: -1px !important;
+}
+
+.design_input_hovered {
+    cursor: pointer;
+    color: blue;
+    text-decoration: underline;
+}
+
+.key, kbd
+{
+    font-family: Helvetica, Arial, Tahoma, Verdana, sans-serif;
+    font-size: 11pt;
+    padding: 0 2px;
+    margin: 0 1px;
+    border-top: 1px solid #EAEAEA;
+    border-bottom: 1px solid #909090;
+    border-left: 3px solid #E0E0E0;
+    border-right: 3px solid #B6B6B6;
+    background: #D4D4D4 none;
+    font-weight: bold;
+}
+.lkey
+{
+    padding: 0 2px;
+    margin: 0 1px ;
+    border-top: 1px solid #EEEEEE;
+    border-bottom: 1px solid #A0A0A0;
+    border-left: 3px solid #E4E4E4;
+    border-right: 3px solid #C4C4C4;
+    background: #DDDDDD none;
+    font-weight: bold;
+}
+
+.click {
+color: #717171;
+padding: 0 2px;
+margin: 0 1px;
+border: 1px solid #999999;
+white-space: nowrap;
+}
+
+.big {
+    font-size: larger;
+}
+
+
+.nav {
+	width: 100%;
+	height: 34px;
+	background: url("nav.gif") repeat-x left top;
+	border-top: 1px solid #ffffff;
+}
+
+span.nav-corners-bottom {
+	background: url("nav_corners_right.png") no-repeat right bottom;
+	height: 12px;
+	display: block;
+	margin-top: -9px;
+	position: relative;
+	z-index: 9999;
+}
+
+.nav-corners-bottom span {
+	background: url("nav_corners_left.png") no-repeat left bottom;
+	height: 10px;
+	display: block;
+}
+
+.nav ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.nav ul li {
+	float: left;
+	position: relative;
+	height: 34px;
+}
+
+.nav ul li a {
+	display: block;
+	color: #ffffff;
+	font-family: "ExoBold", Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	padding: 9px 14px;
+	text-shadow: 0 0 2px #000000;
+}
+
+.nav ul li a:hover, .nav ul li.current a {
+	color: #4854D2;
+	text-decoration: none;
+}
+
+ .fl {float: left;} .fr {float: right;} .cb {clear: both;}
+
+
+input.quicksearch {
+	width: 115px;
+	height: 20px;
+	background: url("search.png") no-repeat left top;
+	border: none;
+	margin-top: 6px;
+	margin-right: 5px;
+	padding: 2px 20px 0 30px;
+	font-family: "ExoDemiBold", Arial, Helvetica, sans-serif;
+}
+
+.navbar {
+	background-color: #ebebeb;
+	padding: 0 10px;
+	font-family: "ExoDemiBold", Arial, Helvetica, sans-serif;
+}
+
+span.corners-top {
+	background-image: url("corners_left.png");
+}
+
+span.corners-top span {
+	background-image: url("corners_right.png");
+}
+
+span.corners-bottom {
+	background-image: url("corners_left.png");
+}
+
+span.corners-bottom span {
+	background-image: url("corners_right.png");
+}
+
+
+html, body {
+	color: #353535;
+	background: url("bg.jpg") repeat left top #f9f9f9;
+    padding-top:6px;
+}
+
+body > :first-child, .main_content_container{
+    background-color: rgba(255,255,255,0.8);
+    padding: 15px;
+    border: solid 4px #232F46;
+    width: 80%; 
+    max-width: 1400px;
+    margin-left: auto; 
+    margin-right: auto;
+}
+
+.ui-widget-header {
+    font-family: "ExoBold";
+}
+
+.ui-state-active {
+    font-family: "ExoBold";
+}
+
+.navmenu2 {
+    -webkit-padding-start:20px;
+    -webkit-margin-before: 8px;
+    -webkit-margin-after: 8px;
+}
+
+ul.navmenu2 li {
+    display: inline;
+    padding: 0px 16px;
+    font-family:"ExoDemiBold", Arial, Helvetica, sans-serif;
+	font-size:0.9em;
+}
+
+html,body {
+    height:100%;
+}
+
+
+.box
+{
+	border: 1px solid #AAAAAA;
+	color: #555555;
+	padding: 1px 2px;
+}
+
+.compact_ul ul {
+	-webkit-padding-start: 10px;
+}
+
+p {
+    -webkit-margin-before: 0.75em;
+    -webkit-margin-after: 0.75em;
+}
+
+ul {
+    -webkit-margin-before: 0.75em;
+    -webkit-margin-after: 0.75em;
+}
+
+.span_button
+{
+    cursor: pointer;
+    padding: 2px;
+}
+
+.span_button:hover
+{
+    text-shadow: 1px 1px 2px black;
+}
+
+/*.canvas-img
+{
+    width: 30px;
+
+}*/
+
+.noTitleStuff {
+    position: absolute;
+}
+
+.noTitleStuff .ui-dialog-titlebar {
+    
+    display:none
+
+
+}
+
+td
+{
+    vertical-align: top;
+}
+
+h4
+{
+    margin-top: 7px;
+    margin-bottom: 1px;
+}
+
+/* Overlay for when JS is disabled */
+
+.noscript-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color:rgba(0,0,0,0.7);
+    z-index: 9999999;
+}
+
+.noscript-overlay p {
+    margin: 0 auto;
+    padding: 50px 50px;
+    display: block;
+    background-color:#ddd;
+    font-family:"ExoDemiBold", Arial, Helvetica, sans-serif;
+    font-size: 2em;
+    text-align: center;
+}

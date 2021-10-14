@@ -1,0 +1,9 @@
+span[lang = "en"]
+{
+        display: inline; 
+}
+span[lang = "ru"]
+{
+ 
+    display: none !important;
+}   

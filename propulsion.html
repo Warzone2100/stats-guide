@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <script src="scripts/jquery-2.2.4.min.js"></script>
+    <script src="scripts/jquery-ui-1.13.0.custom/jquery-ui.js"></script>
+    <script src="scripts/jquery.blockUI.js"></script>
+    <link href="Styles/MyCustomStyles.css" rel="stylesheet" />
+
+    <link href="scripts/jquery.jqGrid-4.15.5/css/ui.jqgrid.min.css" rel="stylesheet" />
+    <script src="scripts/jquery.jqGrid-4.15.5/jquery.jqgrid.min.js"></script>
+    <script type="text/javascript" src="scripts/jquery.jqGrid-4.15.5/i18n/grid.locale-en.js"></script>
+    <script src="scripts/jquery.blockUI.js"></script>
+
+    <script src="scripts/icons_files_list.js?v=4"></script>
+    <script src="scripts/MyCustomScripts2.js?v=4"></script>
+    <link href="Styles/MyLocalization.css" rel="stylesheet" />
+    <script src="scripts/MyLocalization.js?v=4"></script>
+    <script src="scripts/common_objects.js?v=4"></script>
+    <script src="scripts/designer_functions.js?v=4"></script>
+    <script src="scripts/research_functions.js?v=4"></script>
+
+    <title>Warzone 2100 Guide • Propulsion</title>
+
+<script>
+
+var player = 0;
+
+$(function () {
+
+    InitDataObjects();
+    $("#tabs_left").tabs();
+    $("#tabs_left").tabs("option", "active", 0);
+
+    $('#tabs_left ul:first li:eq(0) a').on("click", function (event) {
+        url_pushState('');
+    });
+
+    $('#tabs_left ul:first li:eq(1) a').on("click", function (event) {
+        DrawDetailsTab_Init();
+    });
+
+    $('#tabs_left ul:first li:eq(2) a').on("click", function (event) {
+        url_pushState('');
+    });
+
+
+    //if (localStorage["propulsion_research_state_seconds"] == undefined) {
+    //    localStorage["propulsion_research_state_seconds"] = 600;
+    //}
+
+    ShowLoading('tabs_left');
+    LoadAllObjects(function () {
+        DoResearchAll(player_all_researched,true, function () {
+            DrawPropulsion('propulsion_container', true);
+            DrawPropulsion('nonres_propulsion_container', false);
+            HideLoading('tabs_left');
+
+            SelectContentByURLData();
+
+        });
+    });
+
+});
+
+$(window).on("popstate", function (event) {
+    /* Chrome, Opera, Firefox - page load / forward/backward */
+    /* IE - forward/backward
+    event.originalEvent.state == null when onpopstate triggered in Chrome/Firefox
+    */
+    if (event.originalEvent.state) {  //this called also on PAGE FIRST LOAD
+        console.log('onpopstate triggered');
+        SelectContentByURLData();
+    }
+});
+
+function SelectContentByURLData() {
+    if (getUrlVars()["details_id"] == undefined) {
+        $("#tabs_left").tabs("option", "active", 0);
+    } else {
+        DrawDetailsTab_Init(getUrlVars()["details_id"]);
+    }
+}
+    
+var tmp_uniq_index = 0;
+
+function DrawPropulsion(container_id, show_enabled) {
+
+    var grid_data = [];
+    for (var propulsion_id in Propulsion.loaded_data_hash) {
+        var res_comp_item = ResearchedComponents[player_all_researched][propulsion_id];
+        if (show_enabled) {
+            if (res_comp_item == undefined) {
+                continue;
+            }
+        } else {
+            if (res_comp_item != undefined) {
+                continue;
+            }
+        }
+
+        //if (res_comp_item != undefined) {
+        //    Propulsion.loaded_data_hash[propulsion_id].minResearchTime = res_comp_item.time_seconds;
+        //}
+        grid_data.push(Propulsion.loaded_data_hash[propulsion_id]);
+
+    }
+
+    grid_data.sort(function (a, b) {
+        if (a.minResearchTime == undefined)
+            return 1;
+        if (b.minResearchTime == undefined)
+            return -1;
+        return a.minResearchTime > b.minResearchTime ? 1 : -1;
+    });
+
+    var grid_element_id = ResetGridContainer(container_id);
+    var grid = $(grid_element_id);
+    grid.jqGrid
+    ({
+        datatype: "local",
+        data: grid_data,
+        rowNum: grid_data.length,
+        height: 'auto',
+        colModel:
+        [
+
+            { label: "", name: "grid_id", key: true, hidden: true },
+            {
+                label: " ",
+                name: 'pic',
+                width: '65px',
+                sortable: false,
+                search: false,
+                formatter: function (cellvalue, options, rowObject) {
+                    return '<a href="propulsion.html?details_id=' + rowObject.grid_id + '" onclick="openpropulsionDetails(\'' + rowObject.grid_id + '\'); return false;">' + Propulsion.GetIconHtml_Function(rowObject) + '</a>';
+                },
+            },
+            {
+                label: " ", name: "name",
+                formatter: function (cellvalue, options, rowObject) {
+                    return '<a href="propulsion.html?details_id=' + rowObject.grid_id + '" onclick="openpropulsionDetails(\'' + rowObject.grid_id + '\'); return false;">' + cellvalue + '</a>';
+                },
+            },
+            {
+                label: "Max. Speed", name: "speed", sorttype: "int", formatter: function (cellvalue, options, rowObject) {
+                    return (cellvalue / 128).toFixed(2)
+                }, width: 40
+            },
+            {
+                label: "HP Modifier",
+                formatter: function (cellvalue, options, rowObject) {
+                    return rowObject.hitpointPctOfBody + '%';
+                },
+                width: 70,
+            },
+            {
+                label: "Resistances to different types of weapons", sortable: false,
+                formatter: function (cellvalue, options, rowObject) {
+                    var res_html = "";
+                    for (var weap_type in PropulsionModifiers.loaded_data_hash) {
+                        var mod = PropulsionModifiers.loaded_data_hash[weap_type][rowObject.type];
+                        mod = mod == undefined ? '-' : Math.ceil(100*100/mod - 100);
+                        res_html += '<div style="width:40px;display:inline-block;" title="' + weap_type + '">' + mod + "% </div>";
+                    }
+                    res_html += "";
+                    return res_html;
+                },
+                width: 310,
+            },
+
+            {
+                label: "Speed Modifier",
+                formatter: function (cellvalue, options, rowObject) {
+                    if (PropulsionType.loaded_data != undefined) {
+                        return PropulsionType.loaded_data_hash[rowObject.type].multiplier + '%';
+                    }
+                    return ' - ';
+                },
+                width: 70,
+            },
+            {
+                label: "Price Modifier", name: "buildPower", width: 55, formatter: function (cellvalue, options, rowObject) {
+                    return '<label style="color:#116611">' + cellvalue + '%</label>';
+                }, sorttype: "int"
+            },
+            {
+                label: "Research",
+                name: "minResearchTime",
+                width: 80,
+                sorttype: "int",
+                formatter: function (cellvalue, options, rowObject) {
+                    if (cellvalue != undefined) {
+                        if (cellvalue < 3600) {
+                            return cellvalue.toMMSS();
+                        } else {
+                            return cellvalue.toHHMMSS();
+                        }
+                    }
+                    return ' - ';
+                },
+            },
+        ],
+        onSelectRow: function (rowid) {
+        },
+        loadonce: true,
+        ignoreCase: true, //make search case insensitive
+    });
+
+
+}
+
+
+function openpropulsionDetails(propulsion_id) {
+    DrawDetailsTab_Init(propulsion_id);
+    url_pushState('?details_id=' + propulsion_id);
+}
+
+function DrawDetailsTab_Init(propulsion_id) {
+
+    $("#tabs_left").tabs("option", "active", 1);
+
+    var res_time = 600;
+
+    if (propulsion_id != undefined) {
+        DoResearch(res_time, 0, function () {
+            DrawPropulsionDetailsParameters(propulsion_id);
+            DrawPropulsionStaticData(propulsion_id);
+        });
+    }
+
+    $("#select_propulsion_button").button({
+        icons: {
+            primary: "ui-icon-triangle-1-s",
+        }
+    }).on("click", function (event) {
+        event.preventDefault();
+        ShowSeletDialog_forDataObject(Propulsion, null, function (propulsion_id_new) {
+            DrawPropulsionDetailsParameters(propulsion_id_new);
+            DrawPropulsionStaticData(propulsion_id_new);
+            url_pushState('?details_id=' + propulsion_id_new);
+        });
+    });
+}
+
+function DrawPropulsionStaticData(propulsion_id) {
+
+    var propulsion = Propulsion.loaded_data_hash[propulsion_id];
+
+    /* Draw Research Path */
+    var res_path_data = GetResearchPath_SubTree(propulsion_id, player_all_researched, 4);
+    DrawResearchPath_Tree("research_path_container", res_path_data);
+
+}
+
+function DrawPropulsionDetailsParameters(propulsion_id) {
+    var propulsion = Propulsion.loaded_data_hash[propulsion_id];
+
+    if (propulsion != undefined) {
+        $("#propulsion_detail_data_container").show();
+        scrollToId('#tabs_left');
+    }
+
+    $('#description_container').html('');
+    /* Show button "Overview research path" */
+    var res_comp_row = ResearchedComponents[player_all_researched][propulsion_id];
+    if (res_comp_row != undefined) {
+        var research = Researches.loaded_data_hash[res_comp_row.research_id];
+        var res_path_button_html = '<br/>Research required: <a href="#" id="show_resdetails_button_span">' + research.name + '</a><button type="button" id="show_respath_button_span">Overview research path</button>'
+        $('#description_container').append(res_path_button_html);
+
+        $('#show_resdetails_button_span').attr("href", "research.html?details_id=" + research.grid_id)
+        $('#show_respath_button_span').button().on("click", function (event) {
+            event.preventDefault();
+            window.open("research.html?tree=1&component_id=" + propulsion_id);
+        }).css("font-size", "0.8em").css("margin-left", "50px");
+    }
+
+
+    $("#select_propulsion_button").button({
+        icons: {
+            primary: "ui-icon-triangle-1-s",
+        }
+    }).on("click", function (event) {
+        event.preventDefault();
+        ShowSeletDialog_forDataObject(Propulsion, propulsion_id, function (propulsion_id_new) {
+            DrawPropulsionDetailsParameters(propulsion_id_new);
+            DrawPropulsionStaticData(propulsion_id_new);
+            url_pushState('?details_id=' + propulsion_id_new);
+        });
+    });
+
+    $("#propulsion_icon").html(Propulsion.GetIconHtml_Function(propulsion));
+    $("#propulsion_name_label").text(propulsion.name);
+
+    /* Draw parameters of propulsion */
+    $('#propulsion_details_details').html('<div id="propulsion_details_details_container"></div>');
+    grid_data = [];
+    {
+        var row = new Object;
+        row.name = 'Max. speed';
+        row.base = (propulsion.speed / 128).toFixed(2);
+        row.group = '';
+        row.descr = 'Maximum speed';
+        grid_data.push(row);
+    }
+    {
+        var row = new Object;
+        row.name = 'Type';
+        row.base = PropulsionType.loaded_data_hash[propulsion.type].flightName
+        row.group = '';
+        row.descr = '';
+        grid_data.push(row);
+    }
+
+    {
+        var row = new Object;
+        row.name = 'Price modifier';
+        row.base = propulsion.buildPower;
+        row.group = '';
+        row.descr = 'Body price multiplied by produlsion price modifier.';
+        grid_data.push(row);
+    }
+    {
+        var row = new Object;
+        row.name = 'Hit Points modifier';
+        row.base = propulsion.hitpointPctOfBody;
+        row.group = '';
+        row.descr = 'Body hit points (HP) multiplied by produlsion HP modifier.';
+        grid_data.push(row);
+    }
+    {
+        var row = new Object;
+        row.name = 'Build time modifier';
+        row.base = propulsion.buildPoints;
+        row.group = '';
+        row.descr = 'Body build time (build points) multiplied by produlsion build time modifier.';
+        grid_data.push(row);
+    }
+    {
+        var row = new Object;
+        row.name = 'Weight modifier';
+        row.base = propulsion.weight;
+        row.group = '';
+        row.descr = 'Body weight multiplied by produlsion weight modifier.';
+        grid_data.push(row);
+    }
+    {
+        var row = new Object;
+        row.name = 'Engine modifier';
+        row.base = PropulsionType.loaded_data_hash[propulsion.type].multiplier;
+        row.group = '';
+        row.descr = 'Engine (speed) modifier for this type of propulsion. Body engine power multiplied by propulsion engine modifier.';
+        grid_data.push(row);
+    }
+    //grid_data = grid_data.concat(CalcWeaponRelatedParameters(weapon, weapon_upgraded));
+
+    DrawComponentDetailsGrid(grid_data, "propulsion_details_details_container");
+
+    DrawPropulsionResistance('resistances_table_container', propulsion_id);
+    DrawPropulsionTerrainModifiers('terrain_table_container', propulsion_id);
+}
+
+
+
+function DrawPropulsionTerrainModifiers(container_id, propulsion_id) {
+    var propulsion = Propulsion.loaded_data_hash[propulsion_id];
+    var grid_data = [];
+    for (var terrainIndex in TerrainTable.loaded_data_hash) {
+        var modifiers_array = TerrainTable.loaded_data_hash[terrainIndex].speedFactor;
+        grid_data.push({
+            terran_name: TerrainTypesIndexes[terrainIndex],
+            modifier: modifiers_array[PropulsionTypeToSpeedFactorMap[propulsion.type]] + '%',
+        });
+    }
+
+    var grid_element_id = ResetGridContainer(container_id);
+    $('<div style="padding:5px">Propulsion type: <b>' + propulsion.type + '</b></div>').insertBefore(grid_element_id);
+    var grid = $(grid_element_id);
+    grid.jqGrid
+    ({
+        datatype: "local",
+        data: grid_data,
+        rowNum: grid_data.length,
+        height: '100%',
+        colModel:
+            [
+                { name: "terran_name", label: "Terrain", width: '150px', fixed: true },
+                { name: "modifier", label: "Modifier", width: '80px', fixed: true },
+            ],
+        loadonce: true,
+    });
+}
+
+</script>
+</head>
+<body>
+    <table class="ui-widget ui-corner-all">
+        <tr>
+            <td id="page_header">
+
+            </td>
+        </tr>
+        <tr>
+            <td id="page_caption" data-caption="Propulsion Guide">
+
+            </td>
+        </tr>
+    <tr>
+        <td style="width:100%;vertical-align:top">
+            <div id="tabs_left" >
+                <ul>
+                    <li><a href="#left-tabs-1">Propulsion Guide</a></li>
+                    <li><a href="#left-tabs-detail">Propulsion Detail</a></li>
+                </ul>
+
+                <div id="left-tabs-1">
+
+                    <div class="ui-accordion ui-widget ui-helper-reset" role="tablist" >
+	                    <h3 style="text-align:left" class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-accordion-header-active ui-state-active ui-corner-top">
+                            <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s" style="float:left;"></span>
+                            Introduction
+	                    </h3>
+                        <div id="Div1" class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active" style="display: block; text-align:left">
+Propulsion has the ability to make a unit very fast (hover), give heavy defense (tracks) or a mixture of defense and speed (half tracked). While propulsion has a great effect on unit speed one must also take into account that high turret and body weight could cause a reduction in unit velocity.
+                        </div>
+                    </div>
+
+                    <div class="ui-accordion ui-widget ui-helper-reset" role="tablist" >
+	                    <h3 style="text-align:left" class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-accordion-header-active ui-state-active ui-corner-top">
+                            <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s" style="float:left;"></span>
+                            Propulsion
+	                    </h3>
+                        <div id="propulsion_container" class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active" style="display: block; text-align:left">
+                        </div>
+                    </div>
+
+                    <div class="ui-accordion ui-widget ui-helper-reset" role="tablist" >
+	                    <h3 style="text-align:left" class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-accordion-header-active ui-state-active ui-corner-top">
+                            <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s" style="float:left;"></span>
+                            Unavailable propulsion
+	                    </h3>
+                        <div id="nonres_propulsion_container" class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active" style="display: block; text-align:left">
+                        </div>
+                    </div>                   
+
+                </div>
+                <div id="left-tabs-detail">
+                    <table style="width:100%">
+                        <tr>
+                            <td>
+                                <div id="selected_propulsion_header">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <span style="float:left" id="propulsion_icon"></span>
+                                            </td>
+                                            <td>
+                                                <span id="propulsion_name_label" style="font-size:1.2em">[...]</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </td>
+                            <td>
+                                You can see details for any propulsion, just select another propulsion. <br />
+                                <div style="width:100%;text-align:center">
+                                    <button id="select_propulsion_button" type="button" style="display:inline-block">Select propulsion...</button>
+                                </div>
+                                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <table style="width:100%">
+                                    <tr>
+                                        <td style="width:65%">
+                                            <div class="ui-accordion ui-widget ui-helper-reset" role="tablist" style="margin-top:20px">
+	                                            <h3 style="text-align:left" class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-accordion-header-active ui-state-active ui-corner-top">
+                                                    <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s" style="float:left;"></span>
+                                                    Description
+	                                            </h3>
+                                                <div id="description_container" class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active" style="display: block; text-align:left">
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style="width:35%">
+
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr id="propulsion_detail_data_container"  style="display:none">
+                            <td style="vertical-align:top; width:50%">
+                                <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="main_parameters_container"></div>
+
+                                <div class="ui-widget-header ui-corner-top" style="padding:2px">Detail Parameters</div>
+                                <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="propulsion_details_details"></div>
+                                <table>
+                                    <tr>
+                                        <td style="vertical-align:top">
+                                            <div class="ui-widget-header ui-corner-top" style="padding:2px">Resistances</div>
+                                            <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="resistances_table_container"></div>
+                                        </td>
+                                        <td style="vertical-align:top">
+                                            <div class="ui-widget-header ui-corner-top" style="padding:2px">Terrain speed modifiers</div>
+                                            <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="terrain_table_container"></div>
+                                        </td>
+                                    </tr>
+                                </table>
+
+
+                            </td>
+                            <td style="vertical-align:top; width:50%">
+
+
+
+                                <div class="ui-widget-header ui-corner-top" style="padding:2px">Research</div>
+                                <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="research_path_container"></div>
+
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            <div id="page_comments_area">
+
+            </div>
+            </div>
+        </td>
+    </tr>
+    </table>
+
+    <div id="modifiers_container" style="display:none">
+
+    </div>
+
+        <label style="float:right; margin-right:100px; color:gray">made by crab_ ©</label>
+    
+    <noscript>
+      <div class="noscript-overlay"><p>The Warzone 2100 Guide requires Javascript.</p></div>
+    </noscript>
+</body>
+</html>

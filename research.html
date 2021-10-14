@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <script src="scripts/jquery-2.2.4.min.js"></script>
+    <script src="scripts/jquery-ui-1.13.0.custom/jquery-ui.js"></script>
+    <script src="scripts/jquery.blockUI.js"></script>
+    <link href="Styles/MyCustomStyles.css" rel="stylesheet" />
+
+    <link href="scripts/jquery.jqGrid-4.15.5/css/ui.jqgrid.min.css" rel="stylesheet" />
+    <script src="scripts/jquery.jqGrid-4.15.5/jquery.jqgrid.min.js"></script>
+    <script type="text/javascript" src="scripts/jquery.jqGrid-4.15.5/i18n/grid.locale-en.js"></script>
+    <script src="scripts/jquery.blockUI.js"></script>
+
+    <script src="scripts/raphael-min.js"></script>
+    <script src="scripts/fabric.js/all.js"></script>
+
+    <script src="scripts/icons_files_list.js?v=4"></script>
+    <script src="scripts/MyCustomScripts2.js?v=4"></script>
+    <link href="Styles/MyLocalization.css" rel="stylesheet" />
+    <script src="scripts/MyLocalization.js?v=4"></script>
+    <script src="scripts/common_objects.js?v=4"></script>
+    <script src="scripts/designer_functions.js?v=4"></script>
+    <script src="scripts/research_functions.js?v=4"></script>
+    <script src="scripts/properties_desription.js?v=4"></script>
+
+    <script src="scripts/page/research.html.js?v=4"></script>
+    
+    <title>Warzone 2100 Guide • Research</title>
+
+</head>
+<body>
+    <table class="ui-widget ui-corner-all">
+        <tr>
+            <td id="page_header">
+
+            </td>
+        </tr>
+        <tr>
+            <td id="page_caption" data-caption="Research Guide">
+
+            </td>
+        </tr>
+    <tr>
+        <td style="width:100%;vertical-align:top">
+           <div id="intro_header">
+           </div>
+           <div id="intro_content">
+               <p>
+                    In warzone2100 we have up to <b>400</b> different researches. <u>Remember:</u> before use a stuff you have to research that stuff.
+                    To research something you have to build <b>Research Facility</b>. 
+                </p>
+               Warning: Research Tree Tab is very big and can be <span style="color:red">slow</span>. 
+               Try to use 'static' non-interactive version of Research Tree: <a href="research.html?tree_static=1">Static Tech Tree</a>
+            </div>
+            <div id="tabs_left" >
+                <ul>
+                    <li><a href="#left-tabs-listview">Research List View</a></li>
+                    <li><a href="#left-tabs-tree">Research Tree</a></li>
+                    <li><a href="#left-tabs-timeline">Research Timeline</a></li>
+                    <li><a href="#left-tabs-details">Research Details</a></li>
+                </ul>
+                <div id="left-tabs-listview">
+                    
+                </div>
+                <div id="left-tabs-tree">
+                    <div id="research_tree_container"></div>
+                </div>
+                <div id="left-tabs-timeline">
+                    <div id="time_table_header">
+                    </div>
+                    <div id="time_table_container">
+                    </div>
+                </div>
+                <div id="left-tabs-details">
+                    <table style="width:100%">
+                        <tr>
+                            <td>
+                                <div id="selected_research_header">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <span style="float:left" id="research_icon"></span>
+                                            </td>
+                                            <td>
+                                                <span id="research_name_label" style="font-size:1.2em">[...]</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </td>
+                            <td>                  
+                                <span lang="en">You can see details for any research, just select another research.</span>
+                                <span lang="ru">Вы можете увидеть детальную информацию для любого исследования, просто выберите другое исследование в списке</span>
+                                <br />
+                                <div style="width:100%;text-align:center">
+                                    <button id="select_research_button" type="button" style="display:inline-block">Select Research...</button>
+                                </div>
+                                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <table style="width:100%">
+                                    <tr>
+                                        <td style="width:65%">
+                                            <div class="ui-accordion ui-widget ui-helper-reset" role="tablist" style="margin-top:20px">
+	                                            <h3 style="text-align:left" class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-accordion-header-active ui-state-active ui-corner-top">
+                                                    <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s" style="float:left;"></span>
+                                                    Description
+	                                            </h3>
+                                                <div id="details_description" class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active" style="display: block; text-align:left">
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style="width:35%">
+
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr id="research_detail_data_container" style="display:none">
+                            <td style="vertical-align:top; width:50%">
+                                <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="main_parameters_container"></div>
+
+                                <div class="ui-widget-header ui-corner-top" style="padding:2px">Detail Parameters</div>
+                                <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="research_details"></div>
+
+                                <div class="ui-widget-header ui-corner-top" style="padding:2px">Result Upgrades</div>
+                                <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="details_result_upgrades"></div>
+
+                                <div class="ui-widget-header ui-corner-top" style="padding:2px">Result Components</div>
+                                <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="details_result_components"></div>
+
+                            </td>
+                            <td style="vertical-align:top; width:50%">
+                                <div class="ui-widget-header ui-corner-top" style="padding:2px;">Pre-requisites</div>
+                                <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="details_preres_container"></div>
+
+                                <div class="ui-widget-header ui-corner-top" style="padding:2px">Opens research path to...</div>
+                                <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="details_openres_container"></div>
+
+                                <div class="ui-widget-header ui-corner-top" style="padding:2px">Research Path (Tree)</div>
+                                <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="research_path_container"></div>
+
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            <div id="page_comments_area">
+
+            </div>
+            </div>
+           
+        </td>
+    </tr>
+    </table>
+
+
+
+
+        <label style="float:right; margin-right:100px; color:gray">made by crab_ ©</label>
+    
+    <noscript>
+      <div class="noscript-overlay"><p>The Warzone 2100 Guide requires Javascript.</p></div>
+    </noscript>
+</body>
+</html>

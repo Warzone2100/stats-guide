@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <script src="scripts/jquery-2.2.4.min.js"></script>
+    <script src="scripts/jquery-ui-1.13.0.custom/jquery-ui.js"></script>
+    <script src="scripts/jquery.blockUI.js"></script>
+    <link href="Styles/MyCustomStyles.css" rel="stylesheet" />
+
+    <link href="scripts/jquery.jqGrid-4.15.5/css/ui.jqgrid.min.css" rel="stylesheet" />
+    <script src="scripts/jquery.jqGrid-4.15.5/jquery.jqgrid.min.js"></script>
+    <script type="text/javascript" src="scripts/jquery.jqGrid-4.15.5/i18n/grid.locale-en.js"></script>
+    <script src="scripts/jquery.blockUI.js"></script>
+
+    <script src="scripts/icons_files_list.js?v=4"></script>
+    <script src="scripts/MyCustomScripts2.js"></script>
+    <link href="Styles/MyLocalization.css" rel="stylesheet" />
+    <script src="scripts/MyLocalization.js?v=4"></script>
+    <script src="scripts/common_objects.js?v=4"></script>
+    <script src="scripts/designer_functions.js?v=4"></script>
+    <script src="scripts/research_functions.js?v=4"></script>
+
+    <script src="scripts/properties_desription.js"></script>
+
+    <title>Warzone 2100 Guide • Bodies</title>
+
+<script>
+
+var player = 0;
+
+
+$(function () {
+
+    InitDataObjects();
+    $("#tabs_left").tabs();
+    $("#tabs_left").tabs("option", "active", 0);
+
+    $('#tabs_left ul:first li:eq(0) a').on("click", function (event) {
+        url_pushState('');
+    });
+
+    $('#tabs_left ul:first li:eq(1) a').on("click", function (event) {
+        DrawDetailsTab_Init();
+    });
+
+    $('#tabs_left ul:first li:eq(2) a').on("click", function (event) {
+        url_pushState('');
+    });
+
+
+    var res_time = 600;
+
+    ShowLoading('tabs_left');
+    LoadAllObjects(function () {
+        DoResearchAll(player_all_researched,true, function () {
+            DrawResearchSlider("research_slider",
+                res_time,
+                function (value) {
+                    DoResearch(value, player, function () {
+                        DrawBodyLists();
+                });
+                });
+
+            DoResearch(res_time, player, function () {
+                DrawBodyLists();
+            });
+            HideLoading('tabs_left');
+            SelectContentByURLData();
+        });
+    });
+
+});
+
+$(window).on("popstate", function (event) {
+    /* Chrome, Opera, Firefox - page load / forward/backward */
+    /* IE - forward/backward
+    event.originalEvent.state == null when onpopstate triggered in Chrome/Firefox
+    */
+    if (event.originalEvent.state) {  //this called also on PAGE FIRST LOAD
+        console.log('onpopstate triggered');
+        SelectContentByURLData();
+    }
+});
+
+function SelectContentByURLData()
+{
+    if (getUrlVars()["details_id"] == undefined) {
+        $("#tabs_left").tabs("option", "active", 0);
+    } else {
+        DrawDetailsTab_Init(getUrlVars()["details_id"]);
+    }
+}
+
+
+function DrawBodyLists() {
+
+    var collected_bodies = {};
+
+    /* Tank Bodies */
+    var func_tank_bodies = function (body) {
+        if (body.designable == undefined) {/* Check Body designable */
+            return false;
+        }
+        if (ResearchedComponents[player_all_researched][body.grid_id] == undefined) /* Check Body can be researched */ {
+            return false;
+        }
+        if (body.class != "Droids") {
+            return false;
+        }
+        collected_bodies[body.grid_id] = 1;
+        return true;
+    };
+    var func_tank_light = function (body) {
+        if (body.size != undefined) {
+            if (body.size.toLowerCase() == "light") {
+                return func_tank_bodies(body);
+            }
+        }
+        return false;
+    }
+    DrawBodies('tank_bodies_light', func_tank_light);
+
+    var func_tank_medium = function (body) {
+        if (body.size != undefined) {
+            if (body.size.toLowerCase() == "medium") {
+                return func_tank_bodies(body);
+            }
+        }
+        return false;
+    }
+    DrawBodies('tank_bodies_medium', func_tank_medium);
+
+    var func_tank_heavy = function (body) {
+        if (body.size != undefined) {
+            if (body.size.toLowerCase() == "heavy") {
+                return func_tank_bodies(body);
+            }
+        }
+        if (collected_bodies[body.grid_id] == undefined) {
+            return func_tank_bodies(body); //..in case when we have some new size strings (like "HEAVY2")
+        }
+        return false;
+    }
+    DrawBodies('tank_bodies_heavy', func_tank_heavy);
+
+
+    /* Cyborgs Bodies */
+    var func_cyborgs_bodies = function (body) {
+        if (ResearchedComponents[player_all_researched][body.grid_id] == undefined) /* Check Body can be researched */ {
+            return false;
+        }
+        if (body.class != "Cyborgs") {
+            return false;
+        }
+        collected_bodies[body.grid_id] = 1;
+        return true;
+    };
+    DrawBodies('cyborg_bodies', func_cyborgs_bodies);
+
+    /* Other Bodies */
+    var func_other_bodies = function (body) {
+        return collected_bodies[body.grid_id] == undefined;  // skip bodies which was listed already
+
+    };
+    DrawBodies('other_bodies', func_other_bodies);
+}
+
+        var tmp_uniq_index = 0;
+
+
+function DrawBodies(container_id, body_filter_function) {
+
+    var do_translate_names = typeof po_Translate != "undefined";
+
+    var grid_data = [];
+    for (var body_id in Bodies.loaded_data_hash) {
+        var body = Bodies.loaded_data_hash[body_id];
+        if (body_filter_function(body))
+        {
+            var data_row = JSON.parse(JSON.stringify(Upgrades[player].Body[body.index_of_datarow]));
+            grid_data.push(data_row);
+
+            if (data_row.name) {
+                data_row.nameKey = data_row.name;
+            }
+            if (do_translate_names && data_row.name != undefined)
+            {
+                if (po_Translate[data_row.name] != undefined) {
+                    data_row.name = po_Translate[data_row.name][0];
+                }
+            }
+        }
+    }
+
+
+    grid_data.sort(function (a, b) {
+        if(a.size != undefined && b.size != undefined)
+        {
+            if(a.size == b.size)
+            {
+                return a.minResearchTime > b.minResearchTime ? 1 : -1;
+            }else
+            {
+                return a.size > b.size  ? 1 : -1;
+            }
+        }
+        return (a.minResearchTime > b.minResearchTime ? 1 : -1) == undefined ? 1 : -1;
+    });
+
+    var grid_element_id = ResetGridContainer(container_id);
+    var grid = $(grid_element_id);
+    grid.jqGrid
+    ({
+        datatype: "local",
+        data: grid_data,
+        rowNum: grid_data.length,
+        height: 'auto',
+        colModel:
+        [
+
+            { label: "", name: "grid_id", key: true, hidden: true },
+            {
+                label: " ",
+                name: 'pic',
+                width: '65px',
+                sortable: false,
+                search: false,
+                formatter: function (cellvalue, options, rowObject) {
+                    return '<a href="body.html?details_id=' + rowObject.grid_id + '" onclick="openBodyDetails(\'' + rowObject.grid_id + '\'); return false;">' + Bodies.GetIconHtml_Function(rowObject) + '</a>';
+                },
+            },
+            {
+                label: " ", name: "name",
+                formatter: function (cellvalue, options, rowObject) {
+                    return '<a href="body.html?details_id=' + rowObject.grid_id + '" onclick="openBodyDetails(\'' + rowObject.grid_id + '\'); return false;">' + cellvalue + '</a>';
+                },
+            },
+            {
+                label: "Armor", sortable: false,
+                formatter: function (cellvalue, options, rowObject) {
+                    var res_html = '<label style="color:blue" title="Kinetic Armor">' + PropDescr('armourKinetic').format_str(rowObject.armourKinetic) + '</label> / ';
+                    res_html += '<label style="color:red" title="Thermal Armor">' + PropDescr('armourHeat').format_str(rowObject.armourHeat) + '</label>';
+                    return res_html;
+                },
+                width: 70,
+            },
+            {
+                label: "HP", sortable: false,
+                formatter: function (cellvalue, options, rowObject) {
+                    return PropDescr('hitpoints').format_str(rowObject.hitpoints);
+                },
+                width: 70,
+            },
+            {
+                label: "Price", name: "buildPower", width: 45, formatter: function (cellvalue, options, rowObject) {
+                    return '<label style="color:#116611">$' + cellvalue + '</label>';
+                }, sorttype: "int"
+            },
+            {
+                label: "Research",
+                name: "minResearchTime",
+                width: 80,
+                sorttype: "int",
+                formatter: function (cellvalue, options, rowObject) {
+                    if (cellvalue != undefined) {
+                        if (cellvalue < 3600) {
+                            return cellvalue.toMMSS();
+                        } else {
+                            return cellvalue.toHHMMSS();
+                        }
+                    }
+                    return ' - ';
+                },
+            },
+        ],
+        onSelectRow: function (rowid) {
+        },
+        loadonce: true,
+        ignoreCase: true, //make search case insensitive
+    });
+}
+
+
+function openBodyDetails(body_id) {
+    DrawDetailsTab_Init(body_id);
+    url_pushState('?details_id=' + body_id);
+}
+
+function DrawDetailsTab_Init(body_id) {
+
+    $("#tabs_left").tabs("option", "active", 1);
+
+    var res_time = 600;
+
+    DrawResearchSlider("research_slider_details",
+        res_time,
+        function (value) {
+
+            DoResearch(value, 0, function () {
+                if (body_id == undefined) {
+                    body_id = getUrlVars()["details_id"]; //in case when tab was opened without selected weapon
+                }
+                DrawBodyDetailsParameters(body_id);
+            });
+        });
+
+    if (body_id != undefined) {
+        DoResearch(res_time, 0, function () {
+            DrawBodyDetailsParameters(body_id);
+            DrawBodyStaticData(body_id);
+        });
+    }
+
+    $("#select_body_button").button({
+        icons: {
+            primary: "ui-icon-triangle-1-s",
+        }
+    }).on("click", function (event) {
+        event.preventDefault();
+        ShowSeletDialog_forDataObject(Bodies, null, function (body_id_new) {
+            DrawBodyDetailsParameters(body_id_new);
+            DrawBodyStaticData(body_id_new);
+            url_pushState('?details_id=' + body_id_new);
+        });
+    });
+}
+
+function DrawBodyStaticData(body_id) {
+
+    var body = Bodies.loaded_data_hash[body_id];
+
+    /* Draw Research Path */
+    var res_path_data = GetResearchPath_SubTree(body_id, player_all_researched, 4);
+    DrawResearchPath_Tree("research_path_container", res_path_data);
+
+    /* Draw upgrades tables */
+    DrawBodyUpgradesTable("armorKinetic_upgrades_container", body_id, "armourKinetic");
+    DrawBodyUpgradesTable("armorHeat_upgrades_container", body_id, "armourHeat");
+    DrawBodyUpgradesTable("engine_upgrades_container", body_id, "powerOutput");
+}
+
+function DrawBodyDetailsParameters(body_id) {
+    $('#description_container').html('');
+    var body = Bodies.loaded_data_hash[body_id];
+    var body_upgraded = JSON.parse(JSON.stringify(Upgrades[player].Body[body.index_of_datarow])); //deep copy
+
+    if (body != undefined) {
+        $("#body_detail_data_container").show();
+        scrollToId('#tabs_left');
+    }
+
+    if (body.weaponSlots > 1) {
+        $('#description_container').html("This body can hold " + body.weaponSlots + " turrets at once!");
+    }
+
+    /* Show button "Overview research path" */
+    var res_comp_row = ResearchedComponents[player_all_researched][body_id];
+    if (res_comp_row != undefined) {
+        var research = Researches.loaded_data_hash[res_comp_row.research_id];
+        var res_path_button_html = '<br/>Research required: <a href="#" id="show_resdetails_button_span">' + research.name + '</a><button type="button" id="show_respath_button_span">Overview research path</button>'
+        $('#description_container').append(res_path_button_html);
+
+        $('#show_resdetails_button_span').attr("href", "research.html?details_id=" + research.grid_id)
+        $('#show_respath_button_span').button().on("click", function (event) {
+            event.preventDefault();
+            window.open("research.html?tree=1&component_id=" + body_id);
+        }).css("font-size", "0.8em").css("margin-left", "50px");
+    }
+
+    $("#select_body_button").button({
+        icons: {
+            primary: "ui-icon-triangle-1-s",
+        }
+    }).on("click", function (event) {
+        event.preventDefault();
+        ShowSeletDialog_forDataObject(Bodies, body_id, function (body_id_new) {
+            DrawBodyDetailsParameters(body_id_new);
+            DrawBodyStaticData(body_id_new);
+            url_pushState('?details_id=' + body_id_new);
+        });
+    });
+
+    $("#body_icon").html(Bodies.GetIconHtml_Function(body));
+    $("#body_name_label").text(body.name);
+    //$("#abilities_container").html(Form_Weapon_Abilities_html(weapon));
+
+    /* Draw parameters of body */
+    $('#body_details_details').html('<div id="body_details_details_container"></div>');
+    grid_data = [];
+    {
+        var row = new Object;
+        row.name = 'Size';
+        row.base = body.size;
+        row.upgraded = body_upgraded.size;
+        row.group = '';
+        row.descr = 'Size of body determines how much factory modules you need to produce this body (HEAVY - 3, MEDIUM - 2, LIGHT - 1)';
+        grid_data.push(row);
+    }
+    {
+        var row = new Object;
+        row.name = 'Price';
+        row.base = body.buildPower;
+        row.upgraded = body_upgraded.buildPower;
+        row.group = '';
+        row.descr = 'Price multiplied by produlsion price modifier.';
+        grid_data.push(row);
+    }
+    {
+        //var fact_build_points;
+        //var fact_build_points_upgraded;
+
+        //if (abils.) {
+        //    fact_build_points = Structures.loaded_data_hash['A0VTolFactory1'].productionPoints; // per second
+        //    fact_build_points_upgraded = Upgrades[player].Building[Structures.loaded_data_hash['A0VTolFactory1'].index_of_datarow].productionPoints; // per second
+        //} else if (abils.CyborgWeapon) {
+        //    fact_build_points = Structures.loaded_data_hash['A0CyborgFactory'].productionPoints; // per second
+        //    fact_build_points_upgraded = Upgrades[player].Building[Structures.loaded_data_hash['A0CyborgFactory'].index_of_datarow].productionPoints; // per second
+        //} else {
+        //    fact_build_points = Structures.loaded_data_hash['A0LightFactory'].productionPoints; // per second
+        //    fact_build_points_upgraded = Upgrades[player].Building[Structures.loaded_data_hash['A0LightFactory'].index_of_datarow].productionPoints; // per second
+        //}
+
+        //var row = new Object;
+        //row.name = 'Build Time (factory with 1 module)';
+        //row.base = (weapon.buildPower / fact_build_points).toMMSS();
+        //row.upgraded = (weapon_upgraded.buildPower / fact_build_points_upgraded).toMMSS();
+        //row.group = '';
+        //row.descr = 'This time adds to total build time of tank design.';
+        //grid_data.push(row);
+    }
+    {
+        var row = new Object;
+        row.name = 'Kinetic armor';
+        row.base = body.armourKinetic;
+        row.upgraded = body_upgraded.armourKinetic.toInt();
+        row.upgrade_change = ((row.upgraded - row.base) / row.base).toInt();
+        row.group = '';
+        row.descr = 'Armor reduces damage to minimum level 33% of damage. Kinetic armor affects damage with type KINETIC.';
+        grid_data.push(row);
+    }
+    {
+        var row = new Object;
+        row.name = 'Thermal armor';
+        row.base = body.armourHeat;
+        row.upgraded = body_upgraded.armourHeat.toInt();
+        row.upgrade_change = ((row.upgraded - row.base) / row.base).toInt();
+        row.group = '';
+        row.descr = 'Armor reduces damage to minimum level 33% of damage. Thermal armor affects damage with type HEAT.';
+        grid_data.push(row);
+    }
+    {
+        var row = new Object;
+        row.name = 'Engine Power';
+        row.base = body.powerOutput;
+        row.upgraded = body_upgraded.powerOutput;
+        row.group = '';
+        row.descr = '';
+        grid_data.push(row);
+    }
+    {
+        var row = new Object;
+        row.name = 'Weight';
+        row.base = body.weight;
+        row.upgraded = body_upgraded.weight;
+        row.group = '';
+        row.descr = 'This weight multiplied by propulsion weight modifier';
+        grid_data.push(row);
+    }
+    {
+        var row = new Object;
+        row.name = 'Hit Points';
+        row.base = body.hitpoints;
+        row.upgraded = body_upgraded.hitpoints;
+        row.group = '';
+        row.descr = 'Hit points (HP) are multiplied by produlsion HP modifier';
+        grid_data.push(row);
+    }
+    //grid_data = grid_data.concat(CalcWeaponRelatedParameters(weapon, weapon_upgraded));
+
+    DrawComponentDetailsGrid(grid_data, "body_details_details_container");
+
+}
+
+function DrawBodyUpgradesTable(container_id, body_id, research_hint) {
+    var body = Bodies.loaded_data_hash[body_id];
+    var body_upgraded = JSON.parse(JSON.stringify(Upgrades[player_all_researched].Body[body.index_of_datarow])); //deep copy
+    var upgrade_log = body_upgraded.upgrade_history;
+    var grid_data = [];
+    var summ = 0;
+    for (var i in upgrade_log) {
+        var log_rec = upgrade_log[i];
+        var research = Researches.loaded_data_hash[log_rec.research_id];
+        if (log_rec.hint.toLowerCase() == research_hint.toLowerCase()) {
+            summ = summ + log_rec.value;
+            grid_data.push({
+                name: research.name,
+                time_int: ResearchTime[player_all_researched][log_rec.research_id],
+                value: log_rec.value,
+                summ: summ,
+            });
+        }
+    }
+
+    var grid_element_id = ResetGridContainer(container_id);
+    var grid = $(grid_element_id);
+    grid.jqGrid
+    ({
+        datatype: "local",
+        data: grid_data,
+        rowNum: grid_data.length,
+        height: '100%',
+        colModel:
+            [
+                { name: "name", label: "Research", width: '200px', fixed: true },
+                { name: "time_int", width: '50px', fixed: true, hidden: true, sorttype: "int", },
+                {
+                    label: "Research Time (min)",
+                    width: 80,
+                    formatter: function (cellvalue, options, rowObject) {
+                        if (rowObject.time_int == undefined) {
+                            return '<label style="color:gray;font-size:0.9em;">cant research(!)</label>';
+                        }
+                        if (rowObject.time_int < 3600) {
+                            return rowObject.time_int.toMMSS();
+                        } else {
+                            return rowObject.time_int.toHHMMSS();
+                        }
+                    },
+                },
+                //{ name: "value", label: "Upgrade value", width: '100px', fixed: true, formatter: function (cellvalue, options, rowObject) { return cellvalue + '%' } },
+                { name: "summ", label: "Summ Upgrade value", width: '50px', fixed: true, formatter: function (cellvalue, options, rowObject) { return cellvalue + '%' } },
+            ],
+        sortname: "time_int",
+        loadonce: true,
+    });
+}
+
+
+    </script>
+</head>
+<body>
+    <table class="ui-widget ui-corner-all">
+        <tr>
+            <td id="page_header">
+
+            </td>
+        </tr>
+        <tr>
+            <td id="page_caption" data-caption="Body Guide">
+
+            </td>
+        </tr>
+    <tr>
+        <td style="width:100%;vertical-align:top">
+            <div id="tabs_left" >
+                <ul>
+                    <li><a href="#left-tabs-1">Body Guide</a></li>
+                    <li><a href="#left-tabs-detail">Body detail</a></li>
+                    <!--<li><a href="#left-tabs-1">Best Bodies</a></li>-->
+                </ul>
+
+                <div id="left-tabs-1">
+
+                    <div class="ui-accordion ui-widget ui-helper-reset" role="tablist" >
+	                    <h3 style="text-align:left" class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-accordion-header-active ui-state-active ui-corner-top">
+                            <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s" style="float:left;"></span>
+                            Introduction
+	                    </h3>
+                        <div id="Div1" class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active" style="display: block; text-align:left">                 
+The most important parameters of the tank body are <b>armor</b> and <b>hit points (HP)</b>. There are 2 kinds of armor: <span style="color:blue">kinetic</span> and <span style="color:red">thermal</span>. 
+<br />Kinetic armor protects tanks from "physical" damage (ie from machineguns, cannons, rockets, etc.). Thermal armor is used to protect the tank body from "heat" damage type weapons such as flamers, lasers, thermite bombs, etc.
+<br />Note: to produce tanks with <i>medium</i> bodies you need build a factory module. Tanks with <i>heavy</i> bodies require 2 factory modules.                        
+                        </div>
+                    </div>
+
+                    <ul  class="MyStyledLinkMenu" style="display:inline-block">
+                        <li>Tank Bodies: <a href="#tank_bodies_light">Light</a> <a href="#tank_bodies_medium">Medium</a> <a href="#tank_bodies_heavy">Heavy</a></li>
+                        <li><a href="#cyborg_bodies">Cyborg Bodies</a></li>
+                        <li><a href="#other_bodies">Other Bodies</a></li>
+                    </ul>
+
+                    <div  class="ui-widget ui-corner-all" style="padding: -2px; width:500px; display:inline-block; float:right">
+                        <div id="research_slider">
+
+                        </div>
+                        <label style="font-size:0.9em; color:gray;float:right">Use slider to see numeric values for different states of research.</label>
+                    </div>
+
+                    <div class="ui-accordion ui-widget ui-helper-reset" role="tablist" >
+	                    <h3 style="text-align:left" class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-accordion-header-active ui-state-active ui-corner-top">
+                            <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s" style="float:left;"></span>
+                            Tank Bodies - Light
+	                    </h3>
+                        <div id="tank_bodies_light" class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active" style="display: block; text-align:left">
+                        </div>
+                    </div>
+
+                    <div class="ui-accordion ui-widget ui-helper-reset" role="tablist" >
+	                    <h3 style="text-align:left" class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-accordion-header-active ui-state-active ui-corner-top">
+                            <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s" style="float:left;"></span>
+                            Tank Bodies - Medium
+	                    </h3>
+                        <div id="tank_bodies_medium" class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active" style="display: block; text-align:left">
+                        </div>
+                    </div>
+
+                    <div class="ui-accordion ui-widget ui-helper-reset" role="tablist" >
+	                    <h3 style="text-align:left" class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-accordion-header-active ui-state-active ui-corner-top">
+                            <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s" style="float:left;"></span>
+                            Tank Bodies - Heavy
+	                    </h3>
+                        <div id="tank_bodies_heavy" class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active" style="display: block; text-align:left">
+                        </div>
+                    </div>
+
+                    <div class="ui-accordion ui-widget ui-helper-reset" role="tablist" style="margin-top:20px">
+	                    <h3 style="text-align:left" class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-accordion-header-active ui-state-active ui-corner-top">
+                            <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s" style="float:left;"></span>
+                            Cyborg Bodies
+	                    </h3>
+                        <div id="cyborg_bodies" class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active" style="display: block; text-align:left">
+                        </div>
+                    </div>
+
+                    <div class="ui-accordion ui-widget ui-helper-reset" role="tablist" style="margin-top:20px">
+	                    <h3 style="text-align:left" class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-accordion-header-active ui-state-active ui-corner-top">
+                            <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s" style="float:left;"></span>
+                            Other Bodies
+	                    </h3>
+                        <div id="other_bodies" class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active" style="display: block; text-align:left">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div id="left-tabs-detail">
+                    <table style="width:100%">
+                        <tr>
+                            <td>
+                                <div id="selected_body_header">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <span style="float:left" id="body_icon"></span>
+                                            </td>
+                                            <td>
+                                                <span id="body_name_label" style="font-size:1.2em">[...]</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </td>
+                            <td>
+                                You can see details for any body, just select another body. <br />
+                                <div style="width:100%;text-align:center">
+                                    <button id="select_body_button" type="button" style="display:inline-block">Select Body...</button>
+                                </div>
+                                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <table style="width:100%">
+                                    <tr>
+                                        <td style="width:65%">
+                                            <div class="ui-accordion ui-widget ui-helper-reset" role="tablist" style="margin-top:20px">
+	                                            <h3 style="text-align:left" class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-accordion-header-active ui-state-active ui-corner-top">
+                                                    <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s" style="float:left;"></span>
+                                                    Description
+	                                            </h3>
+                                                <div id="description_container" class="ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active" style="display: block; text-align:left">
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td style="width:35%">
+                                            <div  class="ui-widget ui-corner-all" style="padding: -2px; width:500px; display:inline-block;">
+                                            <div id="research_slider_details">
+
+                                            </div>
+                                            <label style="font-size:0.9em; color:gray;">Use slider to see numeric values for different states of research.</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr id="body_detail_data_container"  style="display:none">
+                            <td style="vertical-align:top; width:50%">
+                                <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="main_parameters_container"></div>
+
+                                <div class="ui-widget-header ui-corner-top" style="padding:2px">Detail Parameters</div>
+                                <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="body_details_details"></div>
+                            </td>
+                            <td style="vertical-align:top; width:50%">
+
+                                <div class="ui-widget-header ui-corner-top" style="padding:2px">Kinetic Armor/Hit Points Upgrades</div>
+                                <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="armorKinetic_upgrades_container"></div>
+
+                                <div class="ui-widget-header ui-corner-top" style="padding:2px">Heat Armor Upgrades</div>
+                                <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="armorHeat_upgrades_container"></div>
+
+                                <div class="ui-widget-header ui-corner-top" style="padding:2px">Engine (Speed) Upgrades</div>
+                                <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="engine_upgrades_container"></div>
+
+                                <div class="ui-widget-header ui-corner-top" style="padding:2px">Research</div>
+                                <div class="ui-widget-content ui-corner-bottom" style="padding:2px" id="research_path_container"></div>
+
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            <div id="page_comments_area">
+
+            </div>
+            </div>
+        </td>
+    </tr>
+    </table>
+
+    <div id="modifiers_container" style="display:none">
+
+    </div>
+
+        <label style="float:right; margin-right:100px; color:gray">made by crab_ ©</label>
+
+    <noscript>
+      <div class="noscript-overlay"><p>The Warzone 2100 Guide requires Javascript.</p></div>
+    </noscript>
+</body>
+</html>
