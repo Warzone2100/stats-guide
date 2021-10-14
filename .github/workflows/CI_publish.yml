@@ -142,3 +142,26 @@ jobs:
           # Sleep for 10 seconds
           sleep 10
           echo "Done."
+      - name: 'Generate Cloudflare Cache Purge URLs List'
+        id: purgeurls
+        if: success() && (steps.publishpages.outputs.PROCESS_DEPLOYMENT == 'true')
+        run: |
+          PURGE_URLS_DATA_FILES_DIR="${{ steps.preparefolders.outputs.CHANGELOG_DIR }}/output"
+          python3 "${GITHUB_WORKSPACE}/main/.ci/gen_purge_url_batches.py" "betaguide.wz2100.net" "${{ steps.publishpages.outputs.CHANGED_FILES_LIST }}" "${PURGE_URLS_DATA_FILES_DIR}"
+          echo "::set-output name=PURGE_URLS_DATA_FILES_DIR::${PURGE_URLS_DATA_FILES_DIR}"
+      - name: 'Purge Cloudflare Cache'
+        if: success() && (steps.publishpages.outputs.PROCESS_DEPLOYMENT == 'true')
+        env:
+          CLOUDFLARE_ZONE: ${{ secrets.CLOUDFLARE_WZ2100_ZONE }}
+          CLOUDFLARE_CACHEPURGE_TOKEN: ${{ secrets.CLOUDFLARE_WZ2100_CACHEPURGE_TOKEN }}
+        run: |
+          # Needs to handle multiple data files, since each purge command can only send a max of 30 URLs
+          for file in ${{ steps.purgeurls.outputs.PURGE_URLS_DATA_FILES_DIR }}/*
+          do
+            echo "File: $file"
+            curl -X POST "https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE}/purge_cache" \
+                 -H "Authorization: Bearer ${CLOUDFLARE_CACHEPURGE_TOKEN}" \
+                 -H "Content-Type: application/json" \
+                 --data-binary "@$file"
+          done; # file
+          echo "Done."
