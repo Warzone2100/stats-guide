@@ -2343,8 +2343,9 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
             });
             canvas.on('mouse:wheel', function(opt) {
                 if (!this.isDragging) {
-                    var deltaX = opt.e.deltaX;
-                    if (deltaX != 0 && (Math.abs(deltaX) > (2 * Math.abs(opt.e.deltaY)))) {
+                    var shiftKey = opt.e.shiftKey;
+                    var deltaX = (shiftKey) ? opt.e.deltaY : opt.e.deltaX;
+                    if (deltaX != 0 && (shiftKey || (Math.abs(deltaX) > (2 * Math.abs(opt.e.deltaY))))) {
                         if (opt.e.webkitDirectionInvertedFromDevice) deltaX = -deltaX;
                         var originalX = this.viewportTransform[4];
                         this.wzScrollViewportFunc(deltaX, 0);
