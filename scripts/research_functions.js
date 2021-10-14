@@ -2311,6 +2311,13 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                     }
                 }
                 canvas.fire('wz:scrolled:viewport', null);
+                this.wzNeedsRecalculateObjectPositions = true;
+            };
+            canvas.wzRecalculateObjectPositions = function() {
+                // we want to recalculate new interaction
+                // for all objects, so we call setViewportTransform
+                this.setViewportTransform(this.viewportTransform);
+                this.wzNeedsRecalculateObjectPositions = false;
             };
             canvas.on('mouse:move', function(opt) {
                 if (this.isDragging) {
@@ -2323,11 +2330,14 @@ function DrawResearchTree(container_id, sec_per_pixel, options, options_type2, a
                     this.lastPosX = pos.x;
                     this.lastPosY = pos.y;
                 }
+                else if (this.wzNeedsRecalculateObjectPositions) {
+                    this.wzRecalculateObjectPositions();
+                }
             });
             canvas.on('mouse:up', function(opt) {
                 // on mouse up we want to recalculate new interaction
                 // for all objects, so we call setViewportTransform
-                this.setViewportTransform(this.viewportTransform);
+                this.wzRecalculateObjectPositions();
                 this.isDragging = false;
                 // this.selection = true;
             });
