@@ -1616,7 +1616,7 @@ function GetIcon_filename( grid_id) {
 
 function GetIcon_src(folder, grid_id) {
     var img_name = GetIcon_filename(grid_id);
-    return "data_icons/" + folder + "/" + img_name;
+    return "img/data_icons/" + folder + "/" + img_name;
 }
 
 
