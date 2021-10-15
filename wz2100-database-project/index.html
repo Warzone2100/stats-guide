@@ -17,6 +17,7 @@
     <link href="Styles/MyLocalization.css" rel="stylesheet" />
     <script src="scripts/MyLocalization.js?v=4"></script>
     <script src="scripts/common_objects.js?v=4"></script>
+    <script type="module" src="scripts/lite-youtube.js"></script>
     <title>Warzone 2100 Guide • Guide Index</title>
 
 <script>
@@ -88,11 +89,13 @@
         </td>
         <td rowspan="2" style="vertical-align:top;">
             <div id="story_header"></div>
-            <div id="story_content">
-                <video controls="controls" width="320" height="240" preload="none">
-                    <source src="./Styles/devastation.mp4" type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/>
-                    Video tag not supported. Download the video <a href="./Styles/devastation.mp4">here</a>.
-                </video>
+            <div id="story_content" style="width: 320px;">
+                <lite-youtube
+                  videoid="c5onlIh6WYg"
+                  videotitle="Intro Video"
+                  nocookie="true"
+                  params="rel=0&showinfo=0"
+                ></lite-youtube>
 	       </div>
         </td>
     </tr>
