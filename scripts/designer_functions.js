@@ -1281,7 +1281,7 @@ function CalcWeaponRelatedParameters(weapon_base, weapon_upgraded) {
         row.upgraded = turret_upgraded.radius / 128;
         row.upgrade_change = (row.upgraded - row.base) / row.base;
         row.group = damage1_label;
-        row.descr = Translate('Radius of splash damage. Bigger readium means Splash damage will affect more enemy units.');
+        row.descr = Translate('Radius of splash damage. A bigger radius means Splash damage will affect more enemy units.');
         grid_data.push(row);
     }
     {
@@ -1314,7 +1314,7 @@ function CalcWeaponRelatedParameters(weapon_base, weapon_upgraded) {
         row.upgraded = turret_upgraded.periodicalDamage.toInt();
         row.upgrade_change = (row.upgraded - row.base) / row.base;
         row.group = damage1_label;
-        row.descr = Translate('Additional damage per second. Note: periodical damage affects only enemy units which are stay in \'inflamed area\'');
+        row.descr = Translate('Additional damage per second. Note: periodical damage affects only enemy units which stay in the \'inflamed area\'');
         grid_data.push(row);
     }
     if (turret.periodicalDamageTime != undefined)
