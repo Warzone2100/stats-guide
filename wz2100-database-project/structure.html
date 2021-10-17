@@ -177,7 +177,7 @@ function DrawStructuresLists() {
 
     {
         var elem = DrawSection_type1_html(base_struc.attr('id'), "Sensor Structures");
-        elem.append("Sensor structures are used to reveal map. Sensor towers are useful at aiming artillery fire at enemies at long range.<br/><i>Satellite Uplink</i> is unique structure which reveals whole map.");
+        elem.append("Sensor structures are used to reveal map. Sensor towers are useful at aiming artillery fire at enemies at long range.<br/><i>Satellite Uplink</i> is a unique structure which reveals the whole map.");
         var func_sensor_struc = function (struc) {
             if (struc.sensorID != undefined) {
                 if (ResearchedComponents[player_all_researched][struc.grid_id] == undefined) /* Check Body can be researched */ {
@@ -338,7 +338,7 @@ function DrawStructuresLists() {
     /* Artillery emplacements */
     {
         var elem = DrawSection_type1_html(arty.attr('id'), "All");
-        elem.append("Artillery have long range. Artillery batteries very useful in WZ, but they have weak armor and you need to cover artillery with another defenses.");
+        elem.append("Artillery have long range. Artillery batteries are very useful in WZ, but they have weak armor and you need to cover artillery with defenses.");
         var func_arty_struc = function (struc) {
             if (ResearchedComponents[player_all_researched][struc.grid_id] == undefined) /* Check structures can be researched */ {
                 return false;

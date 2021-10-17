@@ -168,7 +168,7 @@ function DrawWeaponList() {
             var elem = DrawSection_type1_html(tank_weapons.attr('id'), "Background");
             elem.append('\
                 <span lang="en">\
-                    <span>Tank weapons are split into sections by the chosen "research line". Each section contains a list of weapons which use the same upgrades, e.g. when you research machinegun damage you increase the damage of all weapons in the MACHINE GUN section.<br/>Click on a weapon to see it\'s detailed view.</span>\
+                    <span>Tank weapons are split into sections by the chosen "research line". Each section contains a list of weapons which use the same upgrades, e.g. when you research machinegun damage you increase the damage of all weapons in the MACHINE GUN section.<br/>Click on a weapon to see its detailed view.</span>\
                 </span>\
                 <span lang="ru">\
                     <span>Танковые орудия разделены по группам по типу линии исследований. Орудия в одной линии исследований используют одни и те же улучшения, например, когда вы исследует повышение урона для Пулемета, то все орудия из секции "Пулеметы"(MACHINE GUN) получают это улучшение.<br/>Кликните на орудие чтобы просмотреть детальную информацию</span>\
@@ -523,7 +523,7 @@ function showAA() {
         $('#loadable_weapon_lists').append(sect);
         var aa_weap = DrawSection_type2_html(sect.attr('id'), "<span lang='en'>Anti-Air Weapons</span><span lang='ru'>ПВО (противовоздушные орудия)</span>");
         var sect2 = DrawSection_type1_html(aa_weap.attr('id'), "");
-        sect2.append("<span lang='en'>Weapons which can attack only flying <i>VTOL units</i>. This weapons cannot hit ground objects.</span><span lang='ru'>Орудия, которые могут атаковать только воздушные цели. Такие орудия не могут поражать наземные цели.</span>");
+        sect2.append("<span lang='en'>Weapons which can attack only flying <i>VTOL units</i>. These weapons cannot hit ground objects.</span><span lang='ru'>Орудия, которые могут атаковать только воздушные цели. Такие орудия не могут поражать наземные цели.</span>");
         DoResearch(res_time, player, function () {
             {
                 var func = function (weapon) {
@@ -751,7 +751,7 @@ function DrawWeaponDetailsParameters(weap_id) {
         row.base = weapon.hitpoints;
         row.upgraded = weapon_upgraded.hitpoints;
         row.group = '';
-        row.descr = Translate('Hit points are added to total hitpoint of tank design. Note: weapon hitpoints become increased with each composite alloys upgrade.');
+        row.descr = Translate('Hit points are added to total hitpoint of tank design. Note: weapon hitpoints increases with each composite alloys upgrade.');
         grid_data.push(row);
     }
     grid_data = grid_data.concat(CalcWeaponRelatedParameters(weapon, weapon_upgraded));

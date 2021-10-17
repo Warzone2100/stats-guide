@@ -393,7 +393,7 @@ function DrawBodyDetailsParameters(body_id) {
         row.base = body.size;
         row.upgraded = body_upgraded.size;
         row.group = '';
-        row.descr = 'Size of body determines how much factory modules you need to produce this body (HEAVY - 3, MEDIUM - 2, LIGHT - 1)';
+        row.descr = 'Size of body determines how many factory modules you need to produce this body (HEAVY - 3, MEDIUM - 2, LIGHT - 1)';
         grid_data.push(row);
     }
     {
@@ -402,7 +402,7 @@ function DrawBodyDetailsParameters(body_id) {
         row.base = body.buildPower;
         row.upgraded = body_upgraded.buildPower;
         row.group = '';
-        row.descr = 'Price multiplied by produlsion price modifier.';
+        row.descr = 'Price multiplied by propulsion price modifier.';
         grid_data.push(row);
     }
     {
@@ -472,7 +472,7 @@ function DrawBodyDetailsParameters(body_id) {
         row.base = body.hitpoints;
         row.upgraded = body_upgraded.hitpoints;
         row.group = '';
-        row.descr = 'Hit points (HP) are multiplied by produlsion HP modifier';
+        row.descr = 'Hit points (HP) are multiplied by propulsion HP modifier';
         grid_data.push(row);
     }
     //grid_data = grid_data.concat(CalcWeaponRelatedParameters(weapon, weapon_upgraded));

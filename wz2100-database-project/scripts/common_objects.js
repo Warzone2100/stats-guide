@@ -1884,7 +1884,7 @@ var MessagesTranslation = {
     "Splash Radius (tiles)": {
         ru: "Радиус урона по площади (в тайлах)",
     },
-    "Radius of splash damage. Bigger readium means Splash damage will affect more enemy units.": {
+    "Radius of splash damage. A bigger radius means Splash damage will affect more enemy units.": {
         ru: "Радиус урона по площади. При большем радиусе урон 'заденет' большее число вражеских юнитов.",
     },
     "Shots per min (rate-of-fire)": {
@@ -1902,7 +1902,7 @@ var MessagesTranslation = {
     "Period. damage": {
         ru: "Продолжит. урон в сек.",
     },
-    "Additional damage per second. Note: periodical damage affects only enemy units which are stay in \'inflamed area\'": {
+    "Additional damage per second. Note: periodical damage affects only enemy units which stay in the \'inflamed area\'": {
         ru: "Дополнительный продолжительный урон в секунду. Данный урон применяется при условии нахожденя цели в области поражения (на подожженной земле)",
     },
     "Period. time (seconds)": {
@@ -2033,7 +2033,7 @@ var MessagesTranslation = {
     "Hit Points": {
         ru: "Очки жизни (HP)",
     },
-    "Hit points are added to total hitpoint of tank design. Note: weapon hitpoints become increased with each composite alloys upgrade.": {
+    "Hit points are added to total hitpoint of tank design. Note: weapon hitpoints increases with each composite alloys upgrade.": {
         ru: "Очки жизни будут добавлены к суммарным очкам жизни юнита. Очки жизни орудия увеличиваются при исследовании улучшений композитных сплавов.",
     },
 
