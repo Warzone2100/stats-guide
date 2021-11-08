@@ -6287,7 +6287,7 @@
 		"requiredResearch": [
 			"R-Wpn-Flamer-Damage02"
 		],
-		"researchPoints": 2400,
+		"researchPoints": 2500,
 		"researchPower": 75,
 		"results": [
 			{
@@ -7074,7 +7074,7 @@
 		"name": "Howitzer",
 		"requiredResearch": [
 			"R-Wpn-Mortar-Damage04",
-			"R-Wpn-Cannon-Damage05",
+			"R-Wpn-Mortar02Hvy",
 			"R-Sys-Sensor-Upgrade01"
 		],
 		"researchPoints": 9000,
@@ -7916,11 +7916,10 @@
 		"msgName": "RES_W_M_AC2",
 		"name": "Thermal Imaging Mortar Shells",
 		"requiredResearch": [
-			"R-Wpn-Mortar-Acc01",
-			"R-Struc-Research-Upgrade04"
+			"R-Wpn-Mortar-Acc01"
 		],
-		"researchPoints": 5000,
-		"researchPower": 156,
+		"researchPoints": 4800,
+		"researchPower": 150,
 		"results": [
 			{
 				"class": "Weapon",
@@ -7947,11 +7946,10 @@
 		"msgName": "RES_W_M_AC3",
 		"name": "Target Acquisition Mortar Shells",
 		"requiredResearch": [
-			"R-Struc-Research-Upgrade05",
 			"R-Wpn-Mortar-Acc02"
 		],
-		"researchPoints": 8800,
-		"researchPower": 275,
+		"researchPoints": 6000,
+		"researchPower": 187,
 		"results": [
 			{
 				"class": "Weapon",
