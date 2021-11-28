@@ -7,9 +7,6 @@
 		"requiredResearch": [
 			"R-Struc-CommandRelay"
 		],
-		"requiredStructures": [
-			"A0ComDroidControl"
-		],
 		"researchPoints": 1200,
 		"researchPower": 37,
 		"resultComponents": [
@@ -26,9 +23,6 @@
 		"requiredResearch": [
 			"R-Comp-CommandTurret01",
 			"R-Struc-Research-Upgrade07"
-		],
-		"requiredStructures": [
-			"A0ComDroidControl"
 		],
 		"researchPoints": 5000,
 		"researchPower": 450,
@@ -8192,11 +8186,11 @@
 		"msgName": "RES_IMORT",
 		"name": "Incendiary Mortar",
 		"requiredResearch": [
-			"R-Wpn-Mortar-Damage03",
+			"R-Wpn-Mortar-Damage02",
 			"R-Wpn-Flame2"
 		],
-		"researchPoints": 3600,
-		"researchPower": 112,
+		"researchPoints": 4800,
+		"researchPower": 150,
 		"resultComponents": [
 			"Mortar-Incendiary"
 		],
