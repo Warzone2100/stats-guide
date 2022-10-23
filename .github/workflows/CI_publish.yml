@@ -15,7 +15,7 @@ jobs:
     environment: publish-site
     steps:
       - name: Checkout main branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: main
           path: main
@@ -26,9 +26,9 @@ jobs:
         run: |
           CHANGELOG_DIR="${GITHUB_WORKSPACE}/temp/changes"
           mkdir -p "${CHANGELOG_DIR}"
-          echo "::set-output name=CHANGELOG_DIR::${CHANGELOG_DIR}"
+          echo "CHANGELOG_DIR=${CHANGELOG_DIR}" >> $GITHUB_OUTPUT
       - name: Checkout gh-pages branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: gh-pages
           path: gh-pages
@@ -46,20 +46,20 @@ jobs:
           git config user.email "61424532+wzdev-ci@users.noreply.github.com"
           git add -A
           timestamp=$(date -u)
-          git commit -m "Generate site: ${timestamp}" || { echo "::set-output name=PROCESS_DEPLOYMENT::false" && exit 0; }
+          git commit -m "Generate site: ${timestamp}" || { echo "PROCESS_DEPLOYMENT=false" >> $GITHUB_OUTPUT && exit 0; }
           #git pull --rebase
           # Get the new commit's SHA
           NEW_COMMIT_SHA=$(git rev-parse --verify HEAD)
           echo "NEW_COMMIT_SHA=${NEW_COMMIT_SHA}"
           # Push the new commit to the gh-pages branch
           git push
-          echo "::set-output name=PROCESS_DEPLOYMENT::true"
-          echo "::set-output name=GH_PAGES_BRANCH_COMMIT_SHA::${NEW_COMMIT_SHA}"
+          echo "PROCESS_DEPLOYMENT=true" >> $GITHUB_OUTPUT
+          echo "GH_PAGES_BRANCH_COMMIT_SHA=${NEW_COMMIT_SHA}" >> $GITHUB_OUTPUT
           echo "Done."
           # Get the list of files / paths changed in the latest commit
           CHANGED_FILES_LIST="${{ steps.preparefolders.outputs.CHANGELOG_DIR }}/changedpaths.txt"
           git diff-tree --no-commit-id --name-only -r -z HEAD | tr '\0' '\n' > "${CHANGED_FILES_LIST}"
-          echo "::set-output name=CHANGED_FILES_LIST::${CHANGED_FILES_LIST}"
+          echo "CHANGED_FILES_LIST=${CHANGED_FILES_LIST}" >> $GITHUB_OUTPUT
           exit 0
       - name: 'Wait for Deployment'
         id: deployments
@@ -100,7 +100,7 @@ jobs:
             exit 1
           fi
           echo "Found deployment ID: ${DEPLOYMENT_ID}"
-          echo "::set-output name=DEPLOYMENT_ID::${DEPLOYMENT_ID}"
+          echo "DEPLOYMENT_ID=${DEPLOYMENT_ID}" >> $GITHUB_OUTPUT
       - name: 'Wait for Deployment Success'
         if: success() && (steps.publishpages.outputs.PROCESS_DEPLOYMENT == 'true')
         env:
@@ -148,7 +148,7 @@ jobs:
         run: |
           PURGE_URLS_DATA_FILES_DIR="${{ steps.preparefolders.outputs.CHANGELOG_DIR }}/output"
           python3 "${GITHUB_WORKSPACE}/main/.ci/gen_purge_url_batches.py" "betaguide.wz2100.net" "${{ steps.publishpages.outputs.CHANGED_FILES_LIST }}" "${PURGE_URLS_DATA_FILES_DIR}"
-          echo "::set-output name=PURGE_URLS_DATA_FILES_DIR::${PURGE_URLS_DATA_FILES_DIR}"
+          echo "PURGE_URLS_DATA_FILES_DIR=${PURGE_URLS_DATA_FILES_DIR}" >> $GITHUB_OUTPUT
       - name: 'Purge Cloudflare Cache'
         if: success() && (steps.publishpages.outputs.PROCESS_DEPLOYMENT == 'true')
         env:
