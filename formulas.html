@@ -40,6 +40,7 @@
             DrawSection_type1_html("left-tabs-1", "Hit points (Health)").append($('#hitpoints_content'));
             DrawSection_type1_html("left-tabs-1", "Speed").append($('#speed_content'));
             DrawSection_type1_html("left-tabs-1", "Prodution/Construction time").append($('#production_time_content'));
+            DrawSection_type1_html("left-tabs-1", "Unit ranks").append($('#unit_ranks_content'));
 
             InitDataObjects();
             LoadAllObjects(function () {
@@ -49,6 +50,13 @@
         });
 
     </script>
+
+    <style>
+    .unitranktable {
+        text-align: center
+    }
+    </style>
+
 </head>
 <body>
     <table class="ui-widget ui-corner-all">
@@ -218,17 +226,25 @@
                         </ul>                    
                     </div>
                     <div id="unit_ranks_content">
-                        <table class="mpad"><tbody>
+                        <table class="unitranktable"><tbody>
                         <tr>
-                            <th class="l nb" width="22%"></th>
-                            <th class="c" width="15%">Kills required<br><span class="small">(Regular/Sensor units)</span></th>
-                            <th class="c" width="15%">Kills required<br><span class="small">(Commander units)</span></th>
-                            <th width="12%">Speed</th>
-                            <th width="12%">Accuracy</th>
-                            <th width="12%">Enemy<br>accuracy</th>
-                            <th width="12%">Damage<br>taken</th>
+                            <th class="l nb" rowspan="2" colspan="2"></th>
+                            <th class="c" colspan="2">Kills required<br>(multiplayer <=4.3.2 and campaign)</th>
+                            <th class="c" colspan="2">Kills required<br>(multiplayer >4.3.2)</th>
+                            <th rowspan="2">Speed</th>
+                            <th rowspan="2">Accuracy</th>
+                            <th rowspan="2">Enemy<br>accuracy</th>
+                            <th rowspan="2">Damage<br>taken</th>
                         </tr><tr>
-                            <td class="l"><img src="blank.gif">Rookie</td>
+                            <th>Regular units</th>
+                            <th>Commander/Sensor</th>
+                            <th>Regular units</th>
+                            <th>Commander/Sensor</th>
+                        </tr><tr>
+                            <td class="l"></td>
+                            <td class="l">Rookie</td>
+                            <td class="c">0</td>
+                            <td class="c">0</td>
                             <td class="c">0</td>
                             <td class="c">0</td>
                             <td class="c">+0%</td>
@@ -236,7 +252,10 @@
                             <td class="c">-0%</td>
                             <td class="c">-0%</td>
                         </tr><tr>
-                            <td class="l"><img src="rank1.gif">Green</td>
+                            <td class="l"><img src="img/rank_icons/image_lev_0.png"></td>
+                            <td class="l">Green</td>
+                            <td class="c">4</td>
+                            <td class="c">8</td>
                             <td class="c">2</td>
                             <td class="c">12</td>
                             <td class="c">+5%</td>
@@ -244,7 +263,10 @@
                             <td class="c">-5%</td>
                             <td class="c">-6%</td>
                         </tr><tr>
-                            <td class="l"><img src="rank2.gif">Trained</td>
+                            <td class="l"><img src="img/rank_icons/image_lev_1.png"></td>
+                            <td class="l">Trained</td>
+                            <td class="c">8</td>
+                            <td class="c">16</td>
                             <td class="c">4</td>
                             <td class="c">24</td>
                             <td class="c">+10%</td>
@@ -252,7 +274,10 @@
                             <td class="c">-10%</td>
                             <td class="c">-12%</td>
                         </tr><tr>
-                            <td class="l"><img src="rank3.gif">Regular</td>
+                            <td class="l"><img src="img/rank_icons/image_lev_2.png"></td>
+                            <td class="l">Regular</td>
+                            <td class="c">16</td>
+                            <td class="c">32</td>
                             <td class="c">6</td>
                             <td class="c">36</td>
                             <td class="c">+15%</td>
@@ -260,7 +285,10 @@
                             <td class="c">-15%</td>
                             <td class="c">-18%</td>
                         </tr><tr>
-                            <td class="l"><img src="rank4.gif">Professional</td>
+                            <td class="l"><img src="img/rank_icons/image_lev_3.png"></td>
+                            <td class="l">Professional</td>
+                            <td class="c">32</td>
+                            <td class="c">64</td>
                             <td class="c">8</td>
                             <td class="c">48</td>
                             <td class="c">+20%</td>
@@ -268,7 +296,10 @@
                             <td class="c">-20%</td>
                             <td class="c">-24%</td>
                         </tr><tr>
-                            <td class="l"><img src="rank5.gif">Veteran</td>
+                            <td class="l"><img src="img/rank_icons/image_lev_4.png"></td>
+                            <td class="l">Veteran</td>
+                            <td class="c">64</td>
+                            <td class="c">128</td>
                             <td class="c">10</td>
                             <td class="c">60</td>
                             <td class="c">+25%</td>
@@ -276,7 +307,10 @@
                             <td class="c">-25%</td>
                             <td class="c">-30%</td>
                         </tr><tr>
-                            <td class="l"><img src="rank6.gif">Elite</td>
+                            <td class="l"><img src="img/rank_icons/image_lev_5.png"></td>
+                            <td class="l">Elite</td>
+                            <td class="c">128</td>
+                            <td class="c">256</td>
                             <td class="c">12</td>
                             <td class="c">72</td>
                             <td class="c">+30%</td>
@@ -284,7 +318,10 @@
                             <td class="c">-30%</td>
                             <td class="c">-36%</td>
                         </tr><tr>
-                            <td class="l"><img src="rank7.gif">Special</td>
+                            <td class="l"><img src="img/rank_icons/image_lev_6.png"></td>
+                            <td class="l">Special</td>
+                            <td class="c">256</td>
+                            <td class="c">512</td>
                             <td class="c">14</td>
                             <td class="c">84</td>
                             <td class="c">+35%</td>
@@ -292,7 +329,10 @@
                             <td class="c">-35%</td>
                             <td class="c">-42%</td>
                         </tr><tr>
-                            <td class="l"><img src="rank8.gif">Hero</td>
+                            <td class="l"><img src="img/rank_icons/image_lev_7.png"></td>
+                            <td class="l">Hero</td>
+                            <td class="c">512</td>
+                            <td class="c">1024</td>
                             <td class="c">16</td>
                             <td class="c">96</td>
                             <td class="c">+40%</td>
