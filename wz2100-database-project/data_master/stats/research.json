@@ -22,6 +22,7 @@
 		"name": "Command Turret Upgrade",
 		"requiredResearch": [
 			"R-Comp-CommandTurret01",
+			"R-Sys-Sensor-Upgrade02",
 			"R-Struc-Research-Upgrade07"
 		],
 		"researchPoints": 5000,
@@ -3165,10 +3166,10 @@
 		"msgName": "RES_SY_RC",
 		"name": "Nexus Resistance Circuits",
 		"requiredResearch": [
-			"R-Sys-Sensor-Upgrade03",
+			"R-Sys-SpyTurret",
 			"R-Struc-Research-Upgrade09"
 		],
-		"researchPoints": 28800,
+		"researchPoints": 18000,
 		"researchPower": 450,
 		"results": [
 			{
@@ -3389,10 +3390,10 @@
 		"name": "Nexus Link Turret",
 		"requiredResearch": [
 			"R-Sys-Sensor-Upgrade03",
-			"R-Struc-Research-Upgrade09"
+			"R-Comp-CommandTurret02"
 		],
-		"researchPoints": 14400,
-		"researchPower": 450,
+		"researchPoints": 12000,
+		"researchPower": 375,
 		"resultComponents": [
 			"SpyTurret01"
 		],
@@ -4506,10 +4507,11 @@
 		],
 		"requiredResearch": [
 			"R-Wpn-MG-ROF03",
-			"R-Wpn-AAGun03"
+			"R-Wpn-AAGun03",
+			"R-Struc-Research-Upgrade06"
 		],
-		"researchPoints": 7200,
-		"researchPower": 225,
+		"researchPoints": 10800,
+		"researchPower": 337,
 		"resultComponents": [
 			"QuadRotAAGun"
 		],
@@ -4736,11 +4738,11 @@
 		"msgName": "RES_W_BMB6",
 		"name": "EMP Missile Launcher",
 		"requiredResearch": [
-			"R-Wpn-EMPCannon",
-			"R-Wpn-Bomb04"
+			"R-Comp-CommandTurret02",
+			"R-Wpn-Bomb-Damage03"
 		],
-		"researchPoints": 25000,
-		"researchPower": 450,
+		"researchPoints": 8000,
+		"researchPower": 250,
 		"resultComponents": [
 			"Bomb6-VTOL-EMP"
 		],
@@ -5330,8 +5332,8 @@
 		"requiredResearch": [
 			"R-Wpn-Cannon-ROF01"
 		],
-		"researchPoints": 8000,
-		"researchPower": 250,
+		"researchPoints": 4800,
+		"researchPower": 150,
 		"resultComponents": [
 			"Cannon5VulcanMk1",
 			"Cannon5Vulcan-VTOL"
@@ -5349,10 +5351,10 @@
 		],
 		"requiredResearch": [
 			"R-Wpn-Cannon5",
-			"R-Struc-Research-Upgrade05"
+			"R-Struc-Research-Upgrade06"
 		],
-		"researchPoints": 9600,
-		"researchPower": 300,
+		"researchPoints": 7050,
+		"researchPower": 225,
 		"resultComponents": [
 			"Cannon6TwinAslt"
 		],
@@ -5364,7 +5366,7 @@
 		"msgName": "RES_EMP_CANT",
 		"name": "EMP Cannon",
 		"requiredResearch": [
-			"R-Sys-Sensor-Upgrade03",
+			"R-Comp-CommandTurret02",
 			"R-Struc-Research-Upgrade08"
 		],
 		"researchPoints": 14400,
@@ -6835,8 +6837,8 @@
 			"R-Wpn-MG-Damage07",
 			"R-Struc-Research-Upgrade06"
 		],
-		"researchPoints": 5000,
-		"researchPower": 156,
+		"researchPoints": 10800,
+		"researchPower": 337,
 		"results": [
 			{
 				"class": "Weapon",
@@ -7089,8 +7091,8 @@
 			"R-Struc-Research-Upgrade06",
 			"R-Wpn-MG4"
 		],
-		"researchPoints": 9000,
-		"researchPower": 281,
+		"researchPoints": 6000,
+		"researchPower": 187,
 		"resultComponents": [
 			"MG5TWINROTARY"
 		],
@@ -7909,7 +7911,9 @@
 		"msgName": "RES_W_M2",
 		"name": "EMP Mortar",
 		"requiredResearch": [
-			"R-Wpn-EMPCannon"
+			"R-Comp-CommandTurret02",
+			"R-Sys-Sensor-Upgrade03",
+			"R-Struc-Research-Upgrade09"
 		],
 		"researchPoints": 14400,
 		"researchPower": 450,
