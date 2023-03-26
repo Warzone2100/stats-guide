@@ -16,13 +16,12 @@
 	Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
-var numCleanTech = 4;	// do x for clean	
+var numCleanTech = 3;	// do x for clean	
 var numBaseTech = 18; // do x for base
 var techlist = new Array(
     "R-Vehicle-Prop-Wheels",
     "R-Sys-Spade1Mk1",
     "R-Vehicle-Body01",
-    "R-Comp-SynapticLink",
     "R-Wpn-MG1Mk1",
     "R-Defense-HardcreteWall",
     "R-Vehicle-Prop-Wheels",
