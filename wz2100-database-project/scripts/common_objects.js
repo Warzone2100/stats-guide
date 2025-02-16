@@ -64,7 +64,7 @@ var PropulsionTypeToSpeedFactorMap = {
     "Half-Tracked": "half-tracked",
 };
 
-var current_site_version = "4.5.1";
+var current_site_version = "4.5.5";
 
 $(function () {
 
@@ -73,7 +73,7 @@ $(function () {
     //    ($.browser.name == "Opera" && $.browser.version < '13') ||
     //    ($.browser.name == "Chrome" && $.browser.version < '32') ||
     //    ($.browser.name == "Microsoft Internet Explorer" && $.browser.version < '10') ||
-    //    ($.browser.name == "Firefox" && $.browser.version < '25')) 
+    //    ($.browser.name == "Firefox" && $.browser.version < '25'))
     //{
     //    var html = '<div id="browser_warning" style="padding:10px;font-size:1.3em;background-color:#ffffdd;color;red;position:fixed;top:10px;left:10%;right:10%;z-index:1000;cursor:pointer;">Warning! You are unsing some old version of your web-browser. Some features of this site might be unsupported. Please upgrade your browser. ' + $.browser.name + $.browser.fullVersion + '</div>';
     //    $('body').append(html);
@@ -210,7 +210,7 @@ function InitDataObjects() {
             grid_colModel: [
                 { label: "ID", name: "grid_id", key: true, width: "80px", hidden:true },
                 { label: '<span lang="en">Name</span><span lang="ru">Название</span>', name: "name", formatter: function (cellvalue, options, rowObject) { return '<b>' + cellvalue + '</b>'}, },
-            
+
                 { label: '<span lang="en">Research Line</span><span lang="ru">Линия исследований</span>', name: "weaponSubClass" },
                 { label: '<span lang="en">Price</span><span lang="ru">Цена</span>', name: "buildPower", width: 45, formatter: function (cellvalue, options, rowObject) { return '$' + cellvalue }, sorttype: "int" },
                 { label: '<span lang="en">Range (tiles)</span><span lang="ru">Дальность (в тайлах)</span>', name: "longRange", sorttype: "int", formatter: function (cellvalue, options, rowObject) { return (cellvalue / 128).toFixed(1) }, width: 40 },
@@ -227,10 +227,10 @@ function InitDataObjects() {
                                 html_res += "<b>" + rowObject.damage + '</b> <span lang="en">(kinetic)</span><span lang="ru">(кинетич.)</span>';
                             }
                         }
-                    
+
                         if (rowObject.radiusDamage != undefined && rowObject.radius != undefined) {
                             html_res += "</br>";
-                        
+
                             if (rowObject.weaponClass == "HEAT") {
                                 html_res += "<label style='color: darkred'><b>" + rowObject.radiusDamage + "</b></label> /" + (rowObject.radius / 128).toFixed(1) + " tiles";
                                 html_res += " (" + '<span lang="en">heat</span><span lang="ru">огнен.</span>' + ")";
@@ -238,7 +238,7 @@ function InitDataObjects() {
                                 html_res += "<b>" + rowObject.radiusDamage + " /" + (rowObject.radius / 128).toFixed(1) + ' <span lang="en">tiles</span><span lang="ru">тайлов</span></b>';
                             }
                         }
-                    
+
                         if (rowObject.periodicalDamage != undefined && rowObject.periodicalDamageRadius != undefined && rowObject.periodicalDamageTime != undefined) {
                             html_res += "</br>";
                             if (rowObject.periodicalDamageWeaponClass == "HEAT") {
@@ -423,7 +423,7 @@ function InitDataObjects() {
                         if (Weapons.loaded_data[i].weaponEffect == rowObject.grid_id) {
                             if(typeof icon_files_hash == 'undefined')
                             {
-                                        
+
                             }else
                             {
                                 var img_html_tmp = Weapons.GetIconHtml_Function(Weapons.loaded_data[i], 48);
@@ -465,19 +465,19 @@ function InitDataObjects() {
             },
             {
                 label: "<span lang='en'>Tracked</span><span lang='ru'>Гусеницы</span>", name: "Tracked", width: '80px',
-                formatter: formatter_modifier, 
+                formatter: formatter_modifier,
             },
             {
                 label: "<span lang='en'>Hover</span><span lang='ru'>Воздушная подушка</span>", name: "Hover", width: '80px',
-                formatter: formatter_modifier, 
+                formatter: formatter_modifier,
             },
             {
                 label: "<span lang='en'>Cyborgs</span><span lang='ru'>Киборги</span>", name: "Legged", width: '80px',
-                formatter: formatter_modifier, 
+                formatter: formatter_modifier,
             },
             {
                 label: "<span lang='en'>VTOL</span><span lang='ru'>СВВП (VTOL)</span>", name: "Lift", width: '80px',
-                formatter: formatter_modifier, 
+                formatter: formatter_modifier,
             },
         ];
         PropulsionModifiers = obj;
@@ -716,7 +716,7 @@ function InitDataObjects() {
                     }
                 },
             },
-            
+
             {
                 label: "<span lang='en'>Weapons</span><span lang='ru'>Орудия</span>", name: "weapons", width: 200, fixed: true,
                 formatter: function (cellvalue, options, rowObject) {
@@ -743,7 +743,7 @@ function InitDataObjects() {
             {
                 return GetIcon_element("Cyborgs", rowObject, size);
             }
-            else 
+            else
             {
                 if (rowObject.type == "CYBORG" || rowObject.type == "CYBORG_SUPER") {
                     var weap_id = rowObject.weapons[0];
@@ -770,7 +770,7 @@ function InitDataObjects() {
         };
 
         Templates = obj;
-        Objects.push(obj); 
+        Objects.push(obj);
     }
 
 }
@@ -798,7 +798,7 @@ function DrawLeftGrid(DataObject) {
 }
 
 function DrawLeftGrid_WithProperties(DataObject) {
-    
+
 }
 
 function DrawGrid(DataObject, container_id, on_select_callback, container_height, container_width) {
@@ -986,7 +986,7 @@ function LoadDataObject(DataObject, callback_function) {
                     }
                 }
                 DataObject.loaded_data_hash[key] = data_row;
-                
+
                 if (data_row.name) {
                     data_row.nameKey = data_row.name;
                 }
@@ -1032,7 +1032,7 @@ function LoadDataObject(DataObject, callback_function) {
                     } else
                     {
                         stats_data = msg;
-                        localStorage[DataObject.sysid + "_loaded_data"] = JSON.stringify(msg); 
+                        localStorage[DataObject.sysid + "_loaded_data"] = JSON.stringify(msg);
                     }
                     method_process_loaded_data(DataObject, stats_data, callback_function);
                     HideLoading('tabs_left');
@@ -1524,7 +1524,7 @@ function DrawDamageModifiersTable(container_id) {
     var grid_data_hash = {};
     var grid_col_hash = {};
     var grid_col_model = [{ name: "prop_struc_type", label: ' ', key: true }];
-    
+
 
     var set_method = function (weap_type, modif_object) {
         if (grid_col_hash[weap_type] == undefined) {
