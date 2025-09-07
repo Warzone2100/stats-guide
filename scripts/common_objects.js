@@ -64,7 +64,7 @@ var PropulsionTypeToSpeedFactorMap = {
     "Half-Tracked": "half-tracked",
 };
 
-var current_site_version = "4.6.0";
+var current_site_version = "4.6.0-revision1";
 
 $(function () {
 
